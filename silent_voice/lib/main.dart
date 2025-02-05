@@ -1,39 +1,50 @@
 import 'package:flutter/material.dart';
-import 'login.dart'; // Importing the login.dart file
+import 'login.dart'; // Import the login page
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: FutureBuilder(
-          future: Future.delayed(const Duration(seconds: 3), () {
-            return const LoginPage(); // Redirect to LoginPage after 3 seconds
-          }),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return const LoginPage(); // Show LoginPage
-            }
-            return Scaffold(
-              // Show loading screen while waiting
-              body: Container(
-                color: const Color(0xFF97D8C4),
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/app_logo.png',
-                    height: 600,
-                    width: 600,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            );
-          },
-        ));
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Navigate to login page after 3 seconds
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Welcome to Silent Voice',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
   }
 }

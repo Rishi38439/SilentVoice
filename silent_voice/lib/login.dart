@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Welcome Back ,',
+                'Good to see you,',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 30),
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'Enter your Username',
+                  hintText: 'Username',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -61,7 +61,7 @@ class LoginPage extends StatelessWidget {
               TextField(
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'Enter your password',
+                  hintText: 'Password',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -91,7 +91,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  'Log In',
+                  'Sign in',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -102,11 +102,11 @@ class LoginPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don’t have an account? "),
+                  Text("Don't have an account? "),
                   GestureDetector(
                     onTap: () {},
                     child: Text(
-                      "Sign up",
+                      "Create",
                       style: TextStyle(color: Colors.blue),
                     ),
                   ),
