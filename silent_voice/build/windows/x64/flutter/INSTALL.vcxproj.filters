@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Programs\SilentVoice\silent_voice\build\windows\x64\CMakeFiles\955f68470f6d5598707ca679efcc99f0\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{DC599AD6-1D7D-34F0-940E-CA47C56AB5F6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

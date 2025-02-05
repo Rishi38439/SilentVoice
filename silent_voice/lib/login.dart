@@ -16,8 +16,44 @@ class LoginApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? _errorMessage;
+
+  void _login() {
+    setState(() {
+      _errorMessage = null; // Reset error message
+    });
+
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter both username and password.';
+      });
+      return;
+    }
+
+    // Here you would typically call your authentication service
+    // For demonstration, let's assume a simple check
+    if (username == 'user' && password == 'pass') {
+      // Navigate to the next screen or show success
+      print('Login successful');
+    } else {
+      setState(() {
+        _errorMessage = 'Invalid username or password.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +84,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 30),
               TextField(
+                controller: _usernameController,
                 decoration: InputDecoration(
                   hintText: 'Username',
                   filled: true,
@@ -59,6 +96,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 15),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Password',
@@ -69,6 +107,13 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 10),
+              if (_errorMessage != null)
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                ),
               SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
@@ -82,7 +127,7 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 15),
