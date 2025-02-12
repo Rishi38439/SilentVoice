@@ -87,9 +87,9 @@
     },
     {
       "name": "http_parser",
-      "rootUri": "file:///C:/Users/rishi/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
+      "rootUri": "file:///C:/Users/rishi/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.0.2",
       "packageUri": "lib/",
-      "languageVersion": "3.4"
+      "languageVersion": "2.12"
     },
     {
       "name": "leak_tracker",
@@ -111,9 +111,9 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///C:/Users/rishi/AppData/Local/Pub/Cache/hosted/pub.dev/lints-5.1.1",
+      "rootUri": "file:///C:/Users/rishi/AppData/Local/Pub/Cache/hosted/pub.dev/lints-5.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.6"
+      "languageVersion": "3.5"
     },
     {
       "name": "matcher",
@@ -266,7 +266,7 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2025-02-05T17:17:21.717575Z",
+  "generated": "2025-02-12T03:08:46.901643Z",
   "generator": "pub",
   "generatorVersion": "3.6.1",
   "flutterRoot": "file:///D:/flutter",
