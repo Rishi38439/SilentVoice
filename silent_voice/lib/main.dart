@@ -1,39 +1,64 @@
 import 'package:flutter/material.dart';
-import 'login.dart'; // Importing the login.dart file
+import 'package:silent_voice/login.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const SilentVoiceApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key}); // This widget is the root of your application.
+class SilentVoiceApp extends StatelessWidget {
+  const SilentVoiceApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    // Use WidgetsBinding to schedule the navigation after the frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Start a timer to redirect to the login page after 3 minutes
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Login()),
+        );
+      });
+    });
+
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: FutureBuilder(
-          future: Future.delayed(const Duration(seconds: 3), () {
-            return const LoginPage(); // Redirect to LoginPage after 3 seconds
-          }),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return const LoginPage(); // Show LoginPage
-            }
-            return Scaffold(
-              // Show loading screen while waiting
-              body: Container(
-                color: const Color(0xFF97D8C4),
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/app_logo.png',
-                    height: 600,
-                    width: 600,
-                    fit: BoxFit.cover,
-                  ),
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment(-0.00, -1.00),
+                end: Alignment(0, 1),
+                colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
+              ),
+            ),
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(-0.00, -1.00),
+                  end: Alignment(0, 1),
+                  colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
                 ),
               ),
-            );
-          },
-        ));
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/app_logo.png', // Replace with your asset path
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

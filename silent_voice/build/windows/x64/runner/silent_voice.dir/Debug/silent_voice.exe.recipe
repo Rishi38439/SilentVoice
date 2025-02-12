@@ -2,13 +2,13 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\Programs\Slient_Voice\silent_voice\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
+      <FullPath>D:\Programs\SilentVoice\silent_voice\build\windows\x64\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Programs\Slient_Voice\silent_voice\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
+      <FullPath>D:\Programs\SilentVoice\silent_voice\build\windows\x64\flutter\x64\Debug\flutter_assemble</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>D:\Programs\Slient_Voice\silent_voice\build\windows\x64\runner\Debug\silent_voice.exe</FullPath>
+      <FullPath>D:\Programs\SilentVoice\silent_voice\build\windows\x64\runner\Debug\silent_voice.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

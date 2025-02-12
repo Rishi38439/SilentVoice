@@ -1,4 +1,4 @@
-# Install script for directory: D:/Programs/Slient_Voice/silent_voice/windows/flutter
+# Install script for directory: D:/Programs/SilentVoice/silent_voice/windows/flutter
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -266,10 +266,10 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2025-02-12T03:31:29.558110Z",
+  "generated": "2025-02-12T03:49:44.871990Z",
   "generator": "pub",
-  "generatorVersion": "3.6.1",
+  "generatorVersion": "3.6.2",
   "flutterRoot": "file:///D:/flutter",
-  "flutterVersion": "3.27.3",
+  "flutterVersion": "3.27.4",
   "pubCache": "file:///C:/Users/rishi/AppData/Local/Pub/Cache"
 }
