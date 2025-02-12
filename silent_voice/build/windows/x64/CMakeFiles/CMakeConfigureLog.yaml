@@ -24,7 +24,7 @@ events:
       The output was:
       0
       MSBuild version 17.12.12+1cce77968 for .NET Framework
-      Build started 05-02-2025 22:51:00.
+      Build started 08-02-2025 09:01:56.
       
       Project "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\3.29.5-msvc4\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
       PrepareForBuild:
@@ -53,7 +53,7 @@ events:
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:01.38
+      Time Elapsed 00:00:01.09
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -72,8 +72,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-copt2r"
-      binary: "D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-copt2r"
+      source: "D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-si1cqz"
+      binary: "D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-si1cqz"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -83,40 +83,40 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-copt2r'
+        Change Dir: 'D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-si1cqz'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_88153.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_e9f9e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         MSBuild version 17.12.12+1cce77968 for .NET Framework
-        Build started 05-02-2025 22:51:03.
+        Build started 08-02-2025 09:01:58.
         
-        Project "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-copt2r\\cmTC_88153.vcxproj" on node 1 (default targets).
+        Project "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-si1cqz\\cmTC_e9f9e.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_88153.dir\\Debug\\".
+          Creating directory "cmTC_e9f9e.dir\\Debug\\".
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-copt2r\\Debug\\".
-          Creating directory "cmTC_88153.dir\\Debug\\cmTC_88153.tlog\\".
+          Creating directory "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-si1cqz\\Debug\\".
+          Creating directory "cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_88153.dir\\Debug\\cmTC_88153.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_88153.dir\\Debug\\cmTC_88153.tlog\\unsuccessfulbuild".
+          Creating "cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_88153.dir\\Debug\\\\" /Fd"cmTC_88153.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_e9f9e.dir\\Debug\\\\" /Fd"cmTC_e9f9e.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.42.34436 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_88153.dir\\Debug\\\\" /Fd"cmTC_88153.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_e9f9e.dir\\Debug\\\\" /Fd"cmTC_e9f9e.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-copt2r\\Debug\\cmTC_88153.exe" /INCREMENTAL /ILK:"cmTC_88153.dir\\Debug\\cmTC_88153.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-copt2r/Debug/cmTC_88153.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-copt2r/Debug/cmTC_88153.lib" /MACHINE:X64  /machine:x64 cmTC_88153.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_88153.vcxproj -> D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-copt2r\\Debug\\cmTC_88153.exe
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.42.34433\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-si1cqz\\Debug\\cmTC_e9f9e.exe" /INCREMENTAL /ILK:"cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-si1cqz/Debug/cmTC_e9f9e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Programs/SilentVoice/silent_voice/build/windows/x64/CMakeFiles/CMakeScratch/TryCompile-si1cqz/Debug/cmTC_e9f9e.lib" /MACHINE:X64  /machine:x64 cmTC_e9f9e.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_e9f9e.vcxproj -> D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-si1cqz\\Debug\\cmTC_e9f9e.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_88153.dir\\Debug\\cmTC_88153.tlog\\unsuccessfulbuild".
-          Touching "cmTC_88153.dir\\Debug\\cmTC_88153.tlog\\cmTC_88153.lastbuildstate".
-        Done Building Project "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-copt2r\\cmTC_88153.vcxproj" (default targets).
+          Deleting file "cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.tlog\\unsuccessfulbuild".
+          Touching "cmTC_e9f9e.dir\\Debug\\cmTC_e9f9e.tlog\\cmTC_e9f9e.lastbuildstate".
+        Done Building Project "D:\\Programs\\SilentVoice\\silent_voice\\build\\windows\\x64\\CMakeFiles\\CMakeScratch\\TryCompile-si1cqz\\cmTC_e9f9e.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:01.08
+        Time Elapsed 00:00:00.67
         
       exitCode: 0
   -
