@@ -5,21 +5,27 @@ void main() {
   runApp(const SilentVoiceApp());
 }
 
-class SilentVoiceApp extends StatelessWidget {
-  const SilentVoiceApp({Key? key}) : super(key: key);
+class SilentVoiceApp extends StatefulWidget {
+  const SilentVoiceApp({super.key});
+
+  @override
+  State<SilentVoiceApp> createState() => _SilentVoiceAppState();
+}
+
+class _SilentVoiceAppState extends State<SilentVoiceApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Start a timer to redirect to the login page after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Use WidgetsBinding to schedule the navigation after the frame is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Start a timer to redirect to the login page after 3 minutes
-      Future.delayed(const Duration(seconds: 3), () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Login()),
-        );
-      });
-    });
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
