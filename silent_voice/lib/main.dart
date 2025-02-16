@@ -13,14 +13,17 @@ class SilentVoiceApp extends StatefulWidget {
 }
 
 class _SilentVoiceAppState extends State<SilentVoiceApp> {
+  bool showSplash = true;
+
   @override
   void initState() {
     super.initState();
-    // Start a timer to redirect to the login page after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Login()),
-      );
+      if (mounted) {
+        setState(() {
+          showSplash = false;
+        });
+      }
     });
   }
 
@@ -28,43 +31,45 @@ class _SilentVoiceAppState extends State<SilentVoiceApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(-0.00, -1.00),
-                end: Alignment(0, 1),
-                colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-              ),
-            ),
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment(-0.00, -1.00),
-                  end: Alignment(0, 1),
-                  colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-                ),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/app_logo.png', // Replace with your asset path
-                      fit: BoxFit.cover,
+      home: showSplash
+          ? Scaffold(
+              body: Center(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(-0.00, -1.00),
+                      end: Alignment(0, 1),
+                      colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
                     ),
-                  ],
+                  ),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment(-0.00, -1.00),
+                        end: Alignment(0, 1),
+                        colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
+                      ),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/app_logo.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-      ),
+            )
+          : const Login(),
     );
   }
 }
