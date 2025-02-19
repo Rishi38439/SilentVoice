@@ -3,6 +3,11 @@ D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/flutter_wind
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.bin
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/AssetManifest.json
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/app_logo.png
+D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/app_upper_wave.png
+D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/honey.png
+D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/password_assets.png
+D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/upper_drop_wave.png
+D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/assets/images/user_assets.png
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/FontManifest.json
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
 D:/Programs/SilentVoice/silent_voice/build/windows/x64/runner/Debug/data/flutter_assets/kernel_blob.bin
