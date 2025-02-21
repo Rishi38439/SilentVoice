@@ -1,4 +1,3 @@
-// ignore_for_file: sort_child_properties_last, prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -21,23 +20,22 @@ class _LoginState extends State<Login> {
       body: Stack(
         children: [
           Positioned(
-            left: -1,
-            top: -310,
             child: Image.asset(
               'assets/images/app_upper_wave.png',
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              fit: BoxFit.cover,
+              height: 180,
             ),
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45.0),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.1),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 168),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                     Text(
                       "Good to see you,",
                       style: TextStyle(
@@ -59,7 +57,7 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 39),
                     Container(
-                      width: 300,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
@@ -79,8 +77,8 @@ class _LoginState extends State<Login> {
                             padding: const EdgeInsets.only(left: 14.0),
                             child: Image.asset(
                               "assets/images/user_assets.png",
-                              width: 10,
-                              height: 10,
+                              width: 5,
+                              height: 5,
                             ),
                           ),
                           border: InputBorder.none,
@@ -94,7 +92,7 @@ class _LoginState extends State<Login> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your username';
+                            return '               Please enter your username';
                           }
                           return null;
                         },
@@ -102,7 +100,7 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 41),
                     Container(
-                      width: 300,
+                      width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
@@ -123,8 +121,6 @@ class _LoginState extends State<Login> {
                             padding: const EdgeInsets.only(left: 14.0),
                             child: Image.asset(
                               "assets/images/password_assets.png",
-                              width: 0,
-                              height: 0,
                             ),
                           ),
                           border: InputBorder.none,
@@ -138,7 +134,7 @@ class _LoginState extends State<Login> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
+                            return '               Please enter your password';
                           }
                           return null;
                         },
@@ -146,7 +142,7 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 34),
                     Text(
-                      "Forgot  your password?",
+                      "Forgot your password?",
                       style: TextStyle(
                         color: Color(0xff858585),
                         fontSize: 15,
@@ -185,8 +181,8 @@ class _LoginState extends State<Login> {
                           }
                         },
                         child: Container(
-                          width: 98,
-                          height: 34,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          height: MediaQuery.of(context).size.height * 0.05,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             gradient: LinearGradient(
@@ -217,12 +213,12 @@ class _LoginState extends State<Login> {
             ),
           ),
           Positioned(
-            left: -40,
-            bottom: bottomPadding > 0 ? bottomPadding : 0,
+            left: MediaQuery.of(context).size.width * 0.2,
+            right: MediaQuery.of(context).size.width * 0.2,
+            bottom: bottomPadding > 0 ? bottomPadding + 20 : 20,
             child: Image.asset(
               'assets/images/honey.png',
-              width: 250,
-              height: 275,
+              fit: BoxFit.contain,
             ),
           ),
         ],
