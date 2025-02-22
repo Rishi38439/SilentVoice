@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:silent_voice/alphabet_learning.dart';
 import 'dart:math';
 
 class SignLearningScreen extends StatelessWidget {
@@ -97,7 +98,14 @@ class SignLearningScreen extends StatelessWidget {
                             icon: Icons.menu_book,
                             title: "Alphabets",
                             subtitle: "Learn sign language alphabets",
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AlphabetsScreen(),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(height: 60),
                           _buildMenuButton(
