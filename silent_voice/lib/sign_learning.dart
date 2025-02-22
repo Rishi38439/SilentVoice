@@ -38,7 +38,7 @@ class VideoScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back, size: 32),
                     onPressed: () {
                       Navigator.pop(context);
                     },
