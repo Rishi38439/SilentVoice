@@ -11,6 +11,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+// New TextField
 
   @override
   Widget build(BuildContext context) {
@@ -56,101 +57,45 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(height: 39),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x19000000),
-                            offset: Offset(0, 8),
-                            blurRadius: 20,
-                          ),
-                        ],
-                      ),
-                      child: TextFormField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(left: 14.0),
-                            child: Image.asset(
-                              "assets/images/user_assets.png",
-                              width: 5,
-                              height: 5,
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 15),
-                          hintStyle: TextStyle(
-                            color: Color(0xff747474),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "Lato",
-                          ),
+
+                    // Username Field
+                    _buildTextField(
+                      controller: _usernameController,
+                      hintText: "Username",
+                      assetPath: "assets/images/user_assets.png",
+                    ),
+                    SizedBox(height: 20),
+
+                    // Password Field
+                    _buildTextField(
+                      controller: _passwordController,
+                      hintText: "Password",
+                      assetPath: "assets/images/password_assets.png",
+                      isObscure: true,
+                    ),
+                    SizedBox(height: 20),
+
+
+                    // Forgot Password
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/acc_verification');
+                      },
+                      child: Text(
+                        "Forgot your password?",
+                        style: TextStyle(
+                          color: Color(0xff858585),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: "Lato",
+                          decoration: TextDecoration.underline,
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '               Please enter your username';
-                          }
-                          return null;
-                        },
                       ),
                     ),
-                    SizedBox(height: 41),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x19000000),
-                            offset: Offset(0, 8),
-                            blurRadius: 20,
-                          ),
-                        ],
-                      ),
-                      child: TextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: 'Password',
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.only(left: 14.0),
-                            child: Image.asset(
-                              "assets/images/password_assets.png",
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(vertical: 15),
-                          hintStyle: TextStyle(
-                            color: Color(0xff808080),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "Lato",
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '               Please enter your password';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 34),
-                    Text(
-                      "Forgot your password?",
-                      style: TextStyle(
-                        color: Color(0xff858585),
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "Lato",
-                      ),
-                    ),
-                    SizedBox(height: 100),
+
+                    SizedBox(height: 80),
+
+                    // Create Account
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -160,7 +105,7 @@ class _LoginState extends State<Login> {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Handle create account
+                            Navigator.pushNamed(context, '/signup');
                           },
                           child: Text(
                             'Create',
@@ -172,17 +117,20 @@ class _LoginState extends State<Login> {
                         ),
                       ],
                     ),
+
                     SizedBox(height: 20),
+
+                    // Login Button
                     Center(
                       child: GestureDetector(
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.pushNamed(context, '/acc_verification');
+                            Navigator.pushNamed(context, '/home');
                           }
                         },
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: MediaQuery.of(context).size.height * 0.05,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: MediaQuery.of(context).size.height * 0.06,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(17),
                             gradient: LinearGradient(
@@ -198,7 +146,7 @@ class _LoginState extends State<Login> {
                             child: Text(
                               'Login',
                               style: TextStyle(
-                                color: const Color.fromARGB(255, 10, 10, 10),
+                                color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -212,16 +160,69 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
+
+          // Honey Image Positioned at Bottom Right Corner
           Positioned(
-            left: MediaQuery.of(context).size.width * 0.2,
-            right: MediaQuery.of(context).size.width * 0.2,
+            left: 20,
             bottom: bottomPadding > 0 ? bottomPadding + 20 : 20,
             child: Image.asset(
               'assets/images/honey.png',
               fit: BoxFit.contain,
+              width: 100,
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required String assetPath,
+    bool isObscure = false,
+  }) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x19000000),
+            offset: Offset(0, 8),
+            blurRadius: 20,
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: isObscure,
+        decoration: InputDecoration(
+          hintText: hintText,
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 14.0),
+            child: Image.asset(
+              assetPath,
+              width: 20,
+              height: 20,
+            ),
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 15),
+          hintStyle: TextStyle(
+            color: Color(0xff808080),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            fontFamily: "Lato",
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return '               Please enter your $hintText';
+          }
+          return null;
+        },
       ),
     );
   }
