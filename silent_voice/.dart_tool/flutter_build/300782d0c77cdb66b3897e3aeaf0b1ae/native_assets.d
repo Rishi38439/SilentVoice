@@ -1,0 +1,1 @@
+ D:\\Programs\\SilentVoice\\silent_voice\\.dart_tool\\flutter_build\\300782d0c77cdb66b3897e3aeaf0b1ae\\native_assets.yaml: 

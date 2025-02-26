@@ -3,17 +3,77 @@ import 'package:silent_voice/homepage.dart';
 import '/forgotpass.dart';
 import 'package:flutter/material.dart';
 import '/signup.dart';
-import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // Needed to convert data to JSON
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> loginUser() async {
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    var url =
+        Uri.parse("http://localhost:5000/api/login"); // Change to your API URL
+
+    try {
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "username": username,
+          "password": password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        print("Login successful: $responseData");
+        // Navigate to Home Screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Home_screen()),
+        );
+      } else {
+        print("Login failed: ${response.body}");
+        _showErrorDialog("Invalid username or password");
+      }
+    } catch (e) {
+      print("Error: $e");
+      _showErrorDialog("Something went wrong. Please try again.");
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Login Failed"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background with curved shape
+          // Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -21,21 +81,6 @@ class Login extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: -100,
-            left: -50,
-            child: Transform.rotate(
-              angle: pi / 6,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(150),
                 ),
               ),
             ),
@@ -58,10 +103,16 @@ class Login extends StatelessWidget {
                   const Text("Login to your account",
                       style: TextStyle(color: Colors.white)),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username"),
+
+                  // Username Field
+                  _buildTextField(Icons.person, "Username", usernameController),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.lock, "Password", obscureText: true),
+
+                  // Password Field
+                  _buildTextField(Icons.lock, "Password", passwordController,
+                      obscureText: true),
                   const SizedBox(height: 10),
+
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -76,13 +127,10 @@ class Login extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Home_screen()));
-                    },
+                    onPressed: loginUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E86C1),
                       shape: RoundedRectangleBorder(
@@ -94,6 +142,7 @@ class Login extends StatelessWidget {
                     child: const Text("Login",
                         style: TextStyle(color: Colors.white)),
                   ),
+
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -123,16 +172,18 @@ class Login extends StatelessWidget {
     );
   }
 
-  // Function to create text fields
-  Widget _buildTextField(IconData icon, String hintText,
+  // Function to create text fields with controllers
+  Widget _buildTextField(
+      IconData icon, String hintText, TextEditingController controller,
       {bool obscureText = false}) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: Colors.grey),
         hintText: hintText,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.3), // Faded effect
+        fillColor: Colors.white.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
