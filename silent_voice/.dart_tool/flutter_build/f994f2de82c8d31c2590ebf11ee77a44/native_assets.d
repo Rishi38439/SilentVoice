@@ -1,0 +1,1 @@
+ /Users/honeymayurchauhan/Documents/GitHub/SilentVoice/silent_voice/.dart_tool/flutter_build/f994f2de82c8d31c2590ebf11ee77a44/native_assets.yaml: 
