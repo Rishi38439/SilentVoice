@@ -10,10 +10,13 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
-          // Background with curved shape
+          // Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -25,38 +28,43 @@ class Login extends StatelessWidget {
               ),
             ),
           ),
+
+          // Faded Circular Decoration
           Positioned(
-            top: -100,
-            left: -50,
+            top: -screenHeight * 0.1,
+            left: -screenWidth * 0.1,
             child: Transform.rotate(
               angle: pi / 6,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(150),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.3),
                 ),
               ),
             ),
           ),
-          // Login Form
+
+          // Login Form (Centered)
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 50),
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
-                  const Text("Login to your account",
-                      style: TextStyle(color: Colors.white)),
+                  const Text(
+                    "Login to your account",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                   const SizedBox(height: 30),
                   _buildTextField(Icons.person, "Username"),
                   const SizedBox(height: 20),
@@ -71,8 +79,10 @@ class Login extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) => const ForgotPassword()));
                       },
-                      child: const Text("Forgot your password?",
-                          style: TextStyle(color: Colors.white)),
+                      child: const Text(
+                        "Forgot your password?",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -98,8 +108,10 @@ class Login extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?",
-                          style: TextStyle(color: Colors.white)),
+                      const Text(
+                        "Don't have an account?",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -107,10 +119,13 @@ class Login extends StatelessWidget {
                               MaterialPageRoute(
                                   builder: (context) => const SignUp()));
                         },
-                        child: const Text("Create",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          "Create",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
                       ),
                     ],
                   ),
@@ -132,7 +147,7 @@ class Login extends StatelessWidget {
         prefixIcon: Icon(icon, color: Colors.grey),
         hintText: hintText,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.3), // Faded effect
+        fillColor: Colors.white.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
