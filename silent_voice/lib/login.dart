@@ -21,8 +21,8 @@ class _LoginState extends State<Login> {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    var url =
-        Uri.parse("http://localhost:5000/api/login"); // Change to your API URL
+    var url = Uri.parse(
+        "http://192.168.10.100:5000/api/login"); // Change to your API URL
 
     try {
       var response = await http.post(
