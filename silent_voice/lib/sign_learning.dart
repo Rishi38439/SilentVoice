@@ -7,6 +7,9 @@ class VideoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -15,7 +18,7 @@ class VideoScreen extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            height: 150,
+            height: screenHeight * 0.1,
             child: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -24,8 +27,8 @@ class VideoScreen extends StatelessWidget {
                   colors: [Color(0xFF67B5D1), Color(0xFFB0DFCC)],
                 ),
                 borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
                 ),
               ),
             ),
@@ -34,33 +37,40 @@ class VideoScreen extends StatelessWidget {
           SafeArea(
             child: Column(
               children: [
-                // Back Button
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back, size: 32),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                // Back Button & Centered Title
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.03, vertical: 10),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, size: 32),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "Hello",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                // Title Text
-                const Text(
-                  "Hello",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const Spacer(), // Pushes content to center
+                SizedBox(height: screenHeight * 0.25), // Dynamic spacing
 
                 // Centered Dataset Video Container
                 Center(
                   child: Container(
-                    width: 160,
-                    height: 160,
+                    width: screenWidth * 0.5,
+                    height: screenWidth * 0.5,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(20),
@@ -81,7 +91,7 @@ class VideoScreen extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.05),
 
                 // Play and Refresh Buttons
                 Row(
@@ -90,14 +100,14 @@ class VideoScreen extends StatelessWidget {
                     _buildIconButton(Icons.play_arrow, () {
                       // Play action
                     }),
-                    const SizedBox(width: 20),
+                    SizedBox(width: screenWidth * 0.1), // Dynamic spacing
                     _buildIconButton(Icons.refresh, () {
                       // Refresh action
                     }),
                   ],
                 ),
 
-                const Spacer(), // Pushes buttons up a little
+                SizedBox(height: screenHeight * 0.1),
               ],
             ),
           ),

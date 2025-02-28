@@ -5,6 +5,9 @@ class VideoTextScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -12,7 +15,7 @@ class VideoTextScreen extends StatelessWidget {
             children: [
               // Gradient Header
               Container(
-                height: 100,
+                height: screenHeight * 0.1,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -20,22 +23,32 @@ class VideoTextScreen extends StatelessWidget {
                     colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
                   ),
                 ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, size: 24),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.04, vertical: 30),
+                  child: Row(
+                    children: [
+                      // Back Button
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, size: 40),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
               // Video Placeholder
-              const Expanded(
+              Expanded(
                 child: Center(
                   child: Text(
                     "Video",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.05,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -48,18 +61,21 @@ class VideoTextScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              height: 80,
+              height: screenHeight * 0.1,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(screenWidth * 0.05),
+                  topRight: Radius.circular(screenWidth * 0.05),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 "Converted Text",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
