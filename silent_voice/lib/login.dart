@@ -1,10 +1,10 @@
-// ignore_for_file: deprecated_member_use
-import 'package:silent_voice/homepage.dart';
-import '/forgotpass.dart';
 import 'package:flutter/material.dart';
-import '/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // Needed to convert data to JSON
+import 'dart:convert';
+import '/homepage.dart';
+import '/forgotpass.dart';
+import '/signup.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,12 +17,32 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  /// Check if user is already logged in
+  Future<void> checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      // Redirect to HomeScreen if already logged in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home_screen()),
+      );
+    }
+  }
+
+  /// Function to handle user login
   Future<void> loginUser() async {
     String username = usernameController.text;
     String password = passwordController.text;
 
-    var url = Uri.parse(
-        "http://192.168.10.100:5000/api/login"); // Change to your API URL
+    var url = Uri.parse("http://192.168.10.100:5000/api/login");
 
     try {
       var response = await http.post(
@@ -37,21 +57,25 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
         print("Login successful: $responseData");
+
+        // Save login state
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+
         // Navigate to Home Screen
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const Home_screen()),
         );
       } else {
-        print("Login failed: ${response.body}");
         _showErrorDialog("Invalid username or password");
       }
     } catch (e) {
-      print("Error: $e");
       _showErrorDialog("Something went wrong. Please try again.");
     }
   }
 
+  /// Function to show error dialogs
   void _showErrorDialog(String message) {
     showDialog(
       context: context,

@@ -1,13 +1,22 @@
-// ignore_for_file: deprecated_member_use, camel_case_types
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:silent_voice/sign_interpreter.dart';
 import 'package:silent_voice/sign_concepts.dart';
-import 'dart:math';
 import '/sign_dict.dart';
+import '/login.dart';
 
 class Home_screen extends StatelessWidget {
   const Home_screen({super.key});
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false); // Clear login state
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Login()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +26,6 @@ class Home_screen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient Background
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -29,66 +37,53 @@ class Home_screen extends StatelessWidget {
               ),
             ),
           ),
-
-          // Faded Circular Decoration
-          Positioned(
-            top: -screenHeight * 0.12,
-            left: -screenWidth * 0.12,
-            child: Transform.rotate(
-              angle: pi / 6,
-              child: Container(
-                width: screenWidth * 0.7,
-                height: screenWidth * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(screenWidth * 0.35),
-                ),
-              ),
-            ),
-          ),
-
-          // Home Page Content
           SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top Row: Profile & Settings Icons
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.person,
-                          color: Colors.black, size: screenWidth * 0.09),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.settings,
-                            color: Colors.black, size: screenWidth * 0.08),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: screenHeight * 0.05),
-
-                // Welcome Message
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                  child: Text(
-                    "Welcome, UserName!",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.person,
+                            color: Colors.black, size: screenWidth * 0.09),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => logout(context),
+                              icon: Icon(Icons.logout,
+                                  color: Colors.black,
+                                  size: screenWidth * 0.08),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.settings,
+                                  color: Colors.black,
+                                  size: screenWidth * 0.08),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-
-                SizedBox(height: screenHeight * 0.08),
-
-                // White Container with Menu Buttons
-                Expanded(
-                  child: Container(
+                  SizedBox(height: screenHeight * 0.05),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Text(
+                      "Welcome, User!",
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.08),
+                  Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -102,7 +97,6 @@ class Home_screen extends StatelessWidget {
                         children: [
                           _buildMenuButton(
                             icon: Icons.menu_book,
-                            center: true,
                             title: "Sign Dictionary",
                             subtitle: "Explore sign language words",
                             onTap: () {
@@ -117,7 +111,6 @@ class Home_screen extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
                             icon: Icons.record_voice_over,
-                            center: true,
                             title: "Sign Learning",
                             subtitle: "Improve your signing skills",
                             onTap: () {
@@ -132,7 +125,6 @@ class Home_screen extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
                             icon: Icons.front_hand,
-                            center: true,
                             title: "Sign Interpreter",
                             subtitle: "Get live interpretation",
                             onTap: () {
@@ -148,8 +140,8 @@ class Home_screen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -157,13 +149,11 @@ class Home_screen extends StatelessWidget {
     );
   }
 
-  // Responsive Button Widget
   Widget _buildMenuButton({
     required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
-    required bool center,
   }) {
     return GestureDetector(
       onTap: onTap,
