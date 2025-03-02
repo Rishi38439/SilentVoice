@@ -1,20 +1,31 @@
-// ignore_for_file: deprecated_member_use, camel_case_types
-
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:silent_voice/sign_interpreter.dart';
 import 'package:silent_voice/sign_concepts.dart';
-import 'dart:math';
 import '/sign_dict.dart';
+import '/login.dart';
 
 class Home_screen extends StatelessWidget {
   const Home_screen({super.key});
 
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false); // Clear login state
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Login()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient Background
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -26,75 +37,62 @@ class Home_screen extends StatelessWidget {
               ),
             ),
           ),
-
-          // Faded Circular Decoration
-          Positioned(
-            top: -100,
-            left: -50,
-            child: Transform.rotate(
-              angle: pi / 6,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(150),
-                ),
-              ),
-            ),
-          ),
-
-          // Home Page Content
           SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top Row: Profile & Settings Icons (Increased Size)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Icon(Icons.person,
-                          color: Colors.black, size: 40), // Increased size
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.settings,
-                            color: Colors.black, size: 40), // Increased size
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                // Welcome Message
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                  child: Text(
-                    "Welcome, UserName!",
-                    style: TextStyle(
-                      fontSize: 28, // Slightly larger font
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.person,
+                            color: Colors.black, size: screenWidth * 0.09),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => logout(context),
+                              icon: Icon(Icons.logout,
+                                  color: Colors.black,
+                                  size: screenWidth * 0.08),
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.settings,
+                                  color: Colors.black,
+                                  size: screenWidth * 0.08),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 60),
-
-                // Curved White Container
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
+                  SizedBox(height: screenHeight * 0.05),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Text(
+                      "Welcome, User!",
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.08),
+                  Container(
+                    decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(screenWidth * 0.05),
+                        topRight: Radius.circular(screenWidth * 0.05),
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(60.0),
+                      padding: EdgeInsets.all(screenWidth * 0.1),
                       child: Column(
                         children: [
                           _buildMenuButton(
@@ -103,44 +101,47 @@ class Home_screen extends StatelessWidget {
                             subtitle: "Explore sign language words",
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignDictionary()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignDictionary()),
+                              );
                             },
                           ),
-                          const SizedBox(height: 60),
+                          SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
                             icon: Icons.record_voice_over,
                             title: "Sign Learning",
                             subtitle: "Improve your signing skills",
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignLearningScreen()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignLearningScreen()),
+                              );
                             },
                           ),
-                          const SizedBox(height: 60),
+                          SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
                             icon: Icons.front_hand,
                             title: "Sign Interpreter",
                             subtitle: "Get live interpretation",
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VideoTextScreen()));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const VideoTextScreen()),
+                              );
                             },
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -148,7 +149,6 @@ class Home_screen extends StatelessWidget {
     );
   }
 
-  // Custom Button Widget (Bigger & Icon + Text in Column)
   Widget _buildMenuButton({
     required IconData icon,
     required String title,
@@ -159,16 +159,16 @@ class Home_screen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 50), // More padding
+        padding: const EdgeInsets.symmetric(vertical: 30),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20), // Slightly rounded
+          borderRadius: BorderRadius.circular(20),
           gradient: const LinearGradient(
             colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              blurRadius: 8, // More depth in shadow
+              blurRadius: 8,
               offset: const Offset(0, 6),
             ),
           ],
@@ -176,16 +176,16 @@ class Home_screen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(width: 50), // Left padding
-            Icon(icon, color: Colors.black, size: 50), // Bigger icon
-            const SizedBox(width: 50), // Space between icon & text
+            const SizedBox(width: 50),
+            Icon(icon, color: Colors.black, size: 40),
+            const SizedBox(width: 50),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 26, // Bigger font
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -193,7 +193,7 @@ class Home_screen extends StatelessWidget {
                 Text(
                   subtitle,
                   style: const TextStyle(
-                    fontSize: 16, // Slightly smaller
+                    fontSize: 14,
                     color: Colors.black87,
                   ),
                 ),

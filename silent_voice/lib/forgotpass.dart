@@ -2,13 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'login.dart';
 
 class ForgotPassword extends StatelessWidget {
   const ForgotPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -24,99 +26,101 @@ class ForgotPassword extends StatelessWidget {
               ),
             ),
           ),
-          // Faded Circle
+
+          // Faded Circle (Scales with screen size)
           Positioned(
-            top: -100,
-            left: -50,
+            top: -screenHeight * 0.15,
+            left: -screenWidth * 0.1,
             child: Transform.rotate(
               angle: pi / 6,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.7,
+                height: screenWidth * 0.7,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(150),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.35),
                 ),
               ),
             ),
           ),
+
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
+                  // Title
+                  Text(
                     "Forgot Password",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: screenWidth * 0.06,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.03),
 
                   // Email TextField with faded effect
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email, color: Colors.grey),
-                        hintText: "E-mail",
-                        filled: true,
-                        fillColor:
-                            Colors.white.withOpacity(0.1), // Faded effect
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
+                  TextField(
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email,
+                          color: Colors.grey, size: screenWidth * 0.06),
+                      hintText: "E-mail",
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.1),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
                       ),
                     ),
+                    style: TextStyle(fontSize: screenWidth * 0.04),
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.01),
 
                   // Buttons Row (Back & Send Email)
                   Row(
                     children: [
-                      // Back Button (Left Side)
+                      // Back Button
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const Login())); // Go back to Login page
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.white.withOpacity(0.2), // Faded button
+                            backgroundColor: Colors.white.withOpacity(0.2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.01),
                           ),
-                          child: const Text("Back",
-                              style: TextStyle(color: Colors.white)),
+                          child: Text("Back",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * 0.04)),
                         ),
                       ),
-                      const SizedBox(width: 10), // Space between buttons
+                      SizedBox(
+                          width: screenWidth * 0.03), // Space between buttons
 
-                      // Send Email Button (Right Side)
+                      // Send Email Button
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.white.withOpacity(0.2), // Faded button
+                            backgroundColor: Colors.white.withOpacity(0.2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.01),
                           ),
-                          child: const Text("Send Email",
-                              style: TextStyle(color: Colors.white)),
+                          child: Text("Send Email",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * 0.04)),
                         ),
                       ),
                     ],

@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, camel_case_types
 
 import 'package:flutter/material.dart';
 import 'package:silent_voice/alphabet_learning.dart';
@@ -9,6 +9,9 @@ class SignLearningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -27,16 +30,16 @@ class SignLearningScreen extends StatelessWidget {
 
           // Faded Circular Decoration
           Positioned(
-            top: -100,
-            left: -50,
+            top: -screenHeight * 0.12,
+            left: -screenWidth * 0.12,
             child: Transform.rotate(
               angle: pi / 6,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.7,
+                height: screenWidth * 0.7,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(150),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.35),
                 ),
               ),
             ),
@@ -49,66 +52,69 @@ class SignLearningScreen extends StatelessWidget {
               children: [
                 // Top Row: Profile & Settings Icons
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Icon(Icons.person, color: Colors.black, size: 40),
+                      Icon(Icons.person,
+                          color: Colors.black, size: screenWidth * 0.09),
                       IconButton(
                         onPressed: () {},
-                        icon: const Icon(Icons.settings,
-                            color: Colors.black, size: 40),
+                        icon: Icon(Icons.settings,
+                            color: Colors.black, size: screenWidth * 0.08),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 40),
+                SizedBox(height: screenHeight * 0.05),
 
                 // Title
-                const Center(
+                Center(
                   child: Text(
                     "Let's Start",
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 40),
+                SizedBox(height: screenHeight * 0.06),
 
                 // Curved White Container
                 Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(screenWidth * 0.05),
+                        topRight: Radius.circular(screenWidth * 0.05),
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(60.0),
+                      padding: EdgeInsets.all(screenWidth * 0.1),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
                             icon: Icons.menu_book,
+                            center: true,
                             title: "Alphabets",
                             subtitle: "Learn sign language alphabets",
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const AlphabetsScreen(),
-                                ),
+                                    builder: (context) =>
+                                        const AlphabetsScreen()),
                               );
                             },
                           ),
-                          const SizedBox(height: 60),
+                          SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
+                            center: true,
                             icon: Icons.numbers,
                             title: "Numbers",
                             subtitle: "Learn sign language numbers",
@@ -133,54 +139,57 @@ class SignLearningScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required bool center,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 50),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
+    {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 30),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+              colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(width: 50),
-            Icon(icon, color: Colors.black, size: 50),
-            const SizedBox(width: 30),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 50),
+              Icon(icon, color: Colors.black, size: 40),
+              const SizedBox(width: 50),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
