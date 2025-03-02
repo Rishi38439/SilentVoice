@@ -6,6 +6,9 @@ class SignDictionary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -21,32 +24,34 @@ class SignDictionary extends StatelessWidget {
               ),
             ),
           ),
+
           SafeArea(
             child: Column(
               children: [
                 // Header with Back Button and Title
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(screenWidth * 0.05),
                   child: Row(
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, size: 32),
                         onPressed: () => Navigator.pop(context),
                       ),
-                      const SizedBox(width: 10),
-                      const Text(
+                      SizedBox(width: screenWidth * 0.02),
+                      Text(
                         "Dictionary",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: screenWidth * 0.06,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
                 ),
+
                 // Search Bar
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: "Search signs...",
@@ -60,19 +65,20 @@ class SignDictionary extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.02),
+
                 // Sign List
                 Expanded(
                   child: Container(
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
                       ),
                     ),
                     child: ListView.builder(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: EdgeInsets.all(screenWidth * 0.03),
                       itemCount: signs.length,
                       itemBuilder: (context, index) {
                         return Card(
@@ -83,7 +89,7 @@ class SignDictionary extends StatelessWidget {
                           child: ListTile(
                             title: Text(
                               signs[index],
-                              style: const TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: screenWidth * 0.04),
                             ),
                             trailing:
                                 const Icon(Icons.arrow_forward_ios, size: 18),
