@@ -48,10 +48,7 @@ class _LoginState extends State<Login> {
       var response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "username": username,
-          "password": password,
-        }),
+        body: jsonEncode({"username": username, "password": password}),
       );
 
       if (response.statusCode == 200) {
@@ -79,16 +76,17 @@ class _LoginState extends State<Login> {
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Login Failed"),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("OK"),
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Login Failed"),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -119,13 +117,16 @@ class _LoginState extends State<Login> {
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  const Text("Login to your account",
-                      style: TextStyle(color: Colors.white)),
+                  const Text(
+                    "Login to your account",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   const SizedBox(height: 30),
 
                   // Username Field
@@ -133,8 +134,12 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 20),
 
                   // Password Field
-                  _buildTextField(Icons.lock, "Password", passwordController,
-                      obscureText: true),
+                  _buildTextField(
+                    Icons.lock,
+                    "Password",
+                    passwordController,
+                    obscureText: true,
+                  ),
                   const SizedBox(height: 10),
 
                   Align(
@@ -142,12 +147,16 @@ class _LoginState extends State<Login> {
                     child: TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ForgotPassword()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPassword(),
+                          ),
+                        );
                       },
-                      child: const Text("Forgot your password?",
-                          style: TextStyle(color: Colors.white)),
+                      child: const Text(
+                        "Forgot your password?",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -161,29 +170,40 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15),
+                        horizontal: 80,
+                        vertical: 15,
+                      ),
                     ),
-                    child: const Text("Login",
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
 
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?",
-                          style: TextStyle(color: Colors.white)),
+                      const Text(
+                        "Don't have an account?",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUp()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignUp(),
+                            ),
+                          );
                         },
-                        child: const Text("Create",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          "Create",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -198,8 +218,11 @@ class _LoginState extends State<Login> {
 
   // Function to create text fields with controllers
   Widget _buildTextField(
-      IconData icon, String hintText, TextEditingController controller,
-      {bool obscureText = false}) {
+    IconData icon,
+    String hintText,
+    TextEditingController controller, {
+    bool obscureText = false,
+  }) {
     return TextField(
       controller: controller,
       obscureText: obscureText,

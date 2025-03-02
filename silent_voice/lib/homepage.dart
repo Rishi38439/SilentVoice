@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:silent_voice/sign_interpreter.dart';
@@ -43,26 +45,34 @@ class Home_screen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.05,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.person,
-                            color: Colors.black, size: screenWidth * 0.09),
+                        Icon(
+                          Icons.person,
+                          color: Colors.black,
+                          size: screenWidth * 0.09,
+                        ),
                         Row(
                           children: [
                             IconButton(
                               onPressed: () => logout(context),
-                              icon: Icon(Icons.logout,
-                                  color: Colors.black,
-                                  size: screenWidth * 0.08),
+                              icon: Icon(
+                                Icons.logout,
+                                color: Colors.black,
+                                size: screenWidth * 0.08,
+                              ),
                             ),
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.settings,
-                                  color: Colors.black,
-                                  size: screenWidth * 0.08),
+                              icon: Icon(
+                                Icons.settings,
+                                color: Colors.black,
+                                size: screenWidth * 0.08,
+                              ),
                             ),
                           ],
                         ),
@@ -71,8 +81,9 @@ class Home_screen extends StatelessWidget {
                   ),
                   SizedBox(height: screenHeight * 0.05),
                   Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.1,
+                    ),
                     child: Text(
                       "Welcome, User!",
                       style: TextStyle(
@@ -103,8 +114,8 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignDictionary()),
+                                  builder: (context) => const SignDictionary(),
+                                ),
                               );
                             },
                           ),
@@ -117,8 +128,9 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignLearningScreen()),
+                                  builder:
+                                      (context) => const SignLearningScreen(),
+                                ),
                               );
                             },
                           ),
@@ -131,8 +143,8 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const VideoTextScreen()),
+                                  builder: (context) => const VideoTextScreen(),
+                                ),
                               );
                             },
                           ),
@@ -192,10 +204,7 @@ class Home_screen extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
-                  ),
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
               ],
             ),
