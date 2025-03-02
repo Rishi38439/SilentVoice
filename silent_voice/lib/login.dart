@@ -1,12 +1,94 @@
-// ignore_for_file: deprecated_member_use
-import 'package:silent_voice/homepage.dart';
-import '/forgotpass.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '/homepage.dart';
+import '/forgotpass.dart';
 import '/signup.dart';
-import 'dart:math';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
+
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  /// Check if user is already logged in
+  Future<void> checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      // Redirect to HomeScreen if already logged in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home_screen()),
+      );
+    }
+  }
+
+  /// Function to handle user login
+  Future<void> loginUser() async {
+    String username = usernameController.text;
+    String password = passwordController.text;
+
+    var url = Uri.parse("http://192.168.10.100:5000/api/login");
+
+    try {
+      var response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"username": username, "password": password}),
+      );
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        print("Login successful: $responseData");
+
+        // Save login state
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+
+        // Navigate to Home Screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home_screen()),
+        );
+      } else {
+        _showErrorDialog("Invalid username or password");
+      }
+    } catch (e) {
+      _showErrorDialog("Something went wrong. Please try again.");
+    }
+  }
+
+  /// Function to show error dialogs
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Login Failed"),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +110,7 @@ class Login extends StatelessWidget {
               ),
             ),
           ),
-
-          // Faded Circular Decoration
-          Positioned(
-            top: -screenHeight * 0.1,
-            left: -screenWidth * 0.1,
-            child: Transform.rotate(
-              angle: pi / 6,
-              child: Container(
-                width: screenWidth * 0.6,
-                height: screenWidth * 0.6,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(screenWidth * 0.3),
-                ),
-              ),
-            ),
-          ),
-
-          // Login Form (Centered)
+          // Login Form
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
@@ -57,27 +121,40 @@ class Login extends StatelessWidget {
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Text(
                     "Login to your account",
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username"),
+
+                  // Username Field
+                  _buildTextField(Icons.person, "Username", usernameController),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.lock, "Password", obscureText: true),
+
+                  // Password Field
+                  _buildTextField(
+                    Icons.lock,
+                    "Password",
+                    passwordController,
+                    obscureText: true,
+                  ),
                   const SizedBox(height: 10),
+
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ForgotPassword()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPassword(),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Forgot your password?",
@@ -86,24 +163,26 @@ class Login extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Home_screen()));
-                    },
+                    onPressed: loginUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E86C1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15),
+                        horizontal: 80,
+                        vertical: 15,
+                      ),
                     ),
-                    child: const Text("Login",
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
+
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,16 +194,19 @@ class Login extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUp()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignUp(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "Create",
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ],
@@ -138,10 +220,15 @@ class Login extends StatelessWidget {
     );
   }
 
-  // Function to create text fields
-  Widget _buildTextField(IconData icon, String hintText,
-      {bool obscureText = false}) {
+  // Function to create text fields with controllers
+  Widget _buildTextField(
+    IconData icon,
+    String hintText,
+    TextEditingController controller, {
+    bool obscureText = false,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: Colors.grey),
