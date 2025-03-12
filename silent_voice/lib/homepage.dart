@@ -28,6 +28,7 @@ class Home_screen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -44,6 +45,7 @@ class Home_screen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// Top Profile & Logout Section
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.05,
@@ -79,6 +81,8 @@ class Home_screen extends StatelessWidget {
                       ],
                     ),
                   ),
+
+                  /// Welcome Text
                   SizedBox(height: screenHeight * 0.05),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -93,7 +97,10 @@ class Home_screen extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   SizedBox(height: screenHeight * 0.08),
+
+                  /// White Container Section
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -119,7 +126,7 @@ class Home_screen extends StatelessWidget {
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05),
+                          SizedBox(height: screenHeight * 0.03),
                           _buildMenuButton(
                             icon: Icons.record_voice_over,
                             title: "Sign Learning",
@@ -128,13 +135,13 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder:
-                                      (context) => const SignLearningScreen(),
+                                  builder: (context) =>
+                                      const SignLearningScreen(),
                                 ),
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05),
+                          SizedBox(height: screenHeight * 0.03),
                           _buildMenuButton(
                             icon: Icons.front_hand,
                             title: "Sign Interpreter",
@@ -186,27 +193,32 @@ class Home_screen extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(width: 50),
+            SizedBox(width: 20),
             Icon(icon, color: Colors.black, size: 40),
-            const SizedBox(width: 50),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+            SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-              ],
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
