@@ -3,8 +3,6 @@ import 'package:silent_voice/homepage.dart';
 import 'login.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
@@ -25,6 +23,7 @@ class _SignUpState extends State<SignUp> {
     checkLoginStatus();
   }
 
+  /// Check if user is already logged in
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -38,51 +37,36 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  /// Sign up user and store data in SharedPreferences
   Future<void> signUpUser() async {
     String username = usernameController.text;
     String email = emailController.text;
     String mobile = mobileController.text;
     String password = passwordController.text;
 
-    var url = Uri.parse("http://192.168.10.100:5000/api/signup");
+    // Print values to terminal
+    print("Username: $username");
+    print("Email: $email");
+    print("Mobile: $mobile");
+    print("Password: $password");
 
-    try {
-      var response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "username": username,
-          "email": email,
-          "mobile": mobile,
-          "password": password,
-        }),
-      );
+    // Store user data in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
+    await prefs.setString('username', username);
+    await prefs.setString('email', email);
+    await prefs.setString('mobile', mobile);
 
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-        print("Sign Up successful: $responseData");
+    print("User details saved in SharedPreferences ✅");
 
-        // Save user data in Shared Preferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isLoggedIn', true);
-        prefs.setString('username', username);
-        prefs.setString('email', email);
-        prefs.setString('mobile', mobile);
-
-        // Redirect to HomeScreen after successful login
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Home_screen()),
-        );
-      } else {
-        print("Sign Up failed: ${response.body}");
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
+    // Navigate to home screen after signup
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Home_screen()),
+    );
   }
 
-  // Function to create text fields (Moved outside signUpUser)
+  /// Function to create text fields
   Widget _buildTextField(
     IconData icon,
     String hintText,
