@@ -43,7 +43,31 @@ app.post("/api/login", async (req, res) => {
   });
 
   res.json({ message: "Login successful", token });
+}
+);
+app.post("/api/signup", async (req, res) => {
+  const { username, email, mobile, password } = req.body;
+
+  // Check if user already exists
+  const existingUser = users.find((u) => u.username === username);
+  if (existingUser) {
+    return res.status(400).json({ message: "Username already taken" });
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Store new user
+  const newUser = { username, email, mobile, password: hashedPassword };
+  users.push(newUser);
+
+  // Generate JWT Token
+  const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "1h" });
+
+  res.json({ message: "Signup successful", token });
 });
+
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '/homepage.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
+import 'package:postgres/postgres.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -23,13 +22,11 @@ class _LoginState extends State<Login> {
     checkLoginStatus();
   }
 
-  /// Check if user is already logged in
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
-      // Redirect to HomeScreen if already logged in
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
@@ -37,29 +34,32 @@ class _LoginState extends State<Login> {
     }
   }
 
-  /// Function to handle user login
   Future<void> loginUser() async {
-    String username = usernameController.text;
-    String password = passwordController.text;
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
 
-    var url = Uri.parse("http://192.168.10.100:5000/api/login");
+    final connection = PostgreSQLConnection(
+      "localhost", // e.g., "192.168.1.100"
+      5432, // Default PostgreSQL port
+      "Login_db",
+    );
 
     try {
-      var response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"username": username, "password": password}),
+      await connection.open();
+
+      List<List<dynamic>> results = await connection.query(
+        "SELECT * FROM users WHERE username = @username AND password = @password",
+        substitutionValues: {
+          "username": username,
+          "password": password, // ⚠️ Hash passwords in real apps!
+        },
       );
 
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-        print("Login successful: $responseData");
-
-        // Save login state
+      if (results.isNotEmpty) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLoggedIn', true);
+        prefs.setString('username', username);
 
-        // Navigate to Home Screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const Home_screen()),
@@ -68,25 +68,25 @@ class _LoginState extends State<Login> {
         _showErrorDialog("Invalid username or password");
       }
     } catch (e) {
-      _showErrorDialog("Something went wrong. Please try again.");
+      _showErrorDialog("Database error: $e");
+    } finally {
+      await connection.close();
     }
   }
 
-  /// Function to show error dialogs
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text("Login Failed"),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text("Login Failed"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
           ),
+        ],
+      ),
     );
   }
 
@@ -98,7 +98,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -110,7 +109,6 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-          // Login Form
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
@@ -121,30 +119,22 @@ class _LoginState extends State<Login> {
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 10),
                   const Text(
                     "Login to your account",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-
-                  // Username Field
                   _buildTextField(Icons.person, "Username", usernameController),
                   const SizedBox(height: 20),
-
-                  // Password Field
-                  _buildTextField(
-                    Icons.lock,
-                    "Password",
-                    passwordController,
-                    obscureText: true,
-                  ),
+                  _buildTextField(Icons.lock, "Password", passwordController,
+                      obscureText: true),
                   const SizedBox(height: 10),
-
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -158,13 +148,11 @@ class _LoginState extends State<Login> {
                       },
                       child: const Text(
                         "Forgot your password?",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Login Button
                   ElevatedButton(
                     onPressed: loginUser,
                     style: ElevatedButton.styleFrom(
@@ -182,14 +170,13 @@ class _LoginState extends State<Login> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         "Don't have an account?",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        style: TextStyle(color: Colors.white),
                       ),
                       TextButton(
                         onPressed: () {
@@ -205,7 +192,6 @@ class _LoginState extends State<Login> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -220,7 +206,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  // Function to create text fields with controllers
   Widget _buildTextField(
     IconData icon,
     String hintText,
