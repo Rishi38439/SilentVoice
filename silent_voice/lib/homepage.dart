@@ -6,6 +6,8 @@ import '/sign_dict.dart';
 import '/sign_interpreter.dart';
 import '/sign_concepts.dart';
 import '/login.dart';
+import '/account_page.dart';
+import '/app_settings.dart';
 
 class Home_screen extends StatelessWidget {
   const Home_screen({super.key});
@@ -53,10 +55,20 @@ class Home_screen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.black,
-                        size: screenWidth * 0.09,
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AccountPage(),
+                            ),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.person,
+                          color: Colors.black,
+                          size: screenWidth * 0.09,
+                        ),
                       ),
                       Row(
                         children: [
@@ -69,7 +81,14 @@ class Home_screen extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingsPage(),
+                                ),
+                              );
+                            },
                             icon: Icon(
                               Icons.settings,
                               color: Colors.black,

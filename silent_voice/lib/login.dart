@@ -1,14 +1,17 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import '/homepage.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
-import 'package:postgres/postgres.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginState createState() => _LoginState();
 }
 
@@ -28,6 +31,7 @@ class _LoginState extends State<Login> {
 
     if (isLoggedIn) {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
@@ -35,42 +39,31 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> loginUser() async {
-    String username = usernameController.text.trim();
+    String email = usernameController.text.trim();
     String password = passwordController.text.trim();
 
-    final connection = PostgreSQLConnection(
-      "localhost", // e.g., "192.168.1.100"
-      5432, // Default PostgreSQL port
-      "Login_db",
-    );
+    final supabase = Supabase.instance.client;
 
     try {
-      await connection.open();
-
-      List<List<dynamic>> results = await connection.query(
-        "SELECT * FROM users WHERE username = @username AND password = @password",
-        substitutionValues: {
-          "username": username,
-          "password": password, // ⚠️ Hash passwords in real apps!
-        },
+      final response = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
       );
 
-      if (results.isNotEmpty) {
+      if (response.user != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLoggedIn', true);
-        prefs.setString('username', username);
+        prefs.setString('email', email);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const Home_screen()),
         );
       } else {
-        _showErrorDialog("Invalid username or password");
+        _showErrorDialog("Invalid email or password");
       }
     } catch (e) {
-      _showErrorDialog("Database error: $e");
-    } finally {
-      await connection.close();
+      _showErrorDialog("Login error: $e");
     }
   }
 
@@ -92,6 +85,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -108,10 +103,11 @@ class _LoginState extends State<Login> {
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 50),
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
@@ -126,7 +122,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username", usernameController),
+                  _buildTextField(Icons.email, "Email", usernameController),
                   const SizedBox(height: 20),
                   _buildTextField(Icons.lock, "Password", passwordController,
                       obscureText: true),
@@ -203,8 +199,11 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildTextField(
-      IconData icon, String hintText, TextEditingController controller,
-      {bool obscureText = false}) {
+    IconData icon,
+    String hintText,
+    TextEditingController controller, {
+    bool obscureText = false,
+  }) {
     return TextField(
       controller: controller,
       obscureText: obscureText,
