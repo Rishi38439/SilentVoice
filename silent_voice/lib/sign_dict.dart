@@ -1,8 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:silent_voice/sign_learning.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'sign_learning.dart';
 
-class SignDictionary extends StatelessWidget {
+class SignDictionary extends StatefulWidget {
   const SignDictionary({super.key});
+
+  @override
+  State<SignDictionary> createState() => _SignDictionaryState();
+}
+
+class _SignDictionaryState extends State<SignDictionary> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  List<String> signs = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSigns();
+  }
+
+  Future<void> fetchSigns() async {
+    try {
+      final response = await supabase.from('signs_table').select('sentence');
+
+      if (response != null && response.isNotEmpty) {
+        setState(() {
+          signs =
+              response.map<String>((row) => row['sentence'] as String).toList();
+          isLoading = false;
+        });
+      }
+    } catch (error) {
+      print('Error fetching data: $error');
+      setState(() => isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +57,6 @@ class SignDictionary extends StatelessWidget {
               ),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
@@ -49,63 +81,51 @@ class SignDictionary extends StatelessWidget {
                   ),
                 ),
 
-                // Search Bar
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Search signs...",
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
+                // Loading Indicator
+                if (isLoading) const CircularProgressIndicator(),
 
                 // Sign List
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
+                if (!isLoading)
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
                       ),
-                    ),
-                    child: ListView.builder(
-                      padding: EdgeInsets.all(screenWidth * 0.03),
-                      itemCount: signs.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 2,
-                          child: ListTile(
-                            title: Text(
-                              signs[index],
-                              style: TextStyle(fontSize: screenWidth * 0.04),
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(screenWidth * 0.03),
+                        itemCount: signs.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            trailing:
-                                const Icon(Icons.arrow_forward_ios, size: 18),
-                            onTap: () {
-                              Navigator.push(
+                            elevation: 2,
+                            child: ListTile(
+                              title: Text(
+                                signs[index],
+                                style: TextStyle(fontSize: screenWidth * 0.04),
+                              ),
+                              trailing:
+                                  const Icon(Icons.arrow_forward_ios, size: 18),
+                              onTap: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VideoTextScreen()));
-                            },
-                          ),
-                        );
-                      },
+                                    builder: (context) =>
+                                        const VideoTextScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -114,35 +134,3 @@ class SignDictionary extends StatelessWidget {
     );
   }
 }
-
-// Sample sign list
-final List<String> signs = [
-  "Hello",
-  "Goodbye",
-  "Thank you",
-  "Welcome",
-  "Sorry",
-  "Yes",
-  "No",
-  "Please",
-  "Go",
-  "Wait",
-  "Stop",
-  "Sleep",
-  "Book",
-  "Come",
-  "Read",
-  "Nice to meet you",
-  "Good morning",
-  "Good night",
-  "Excuse me",
-  "Help me",
-  "What's your name?",
-  "How are you?",
-  "I'm fine",
-  "I don't understand",
-  "Can you repeat that?",
-  "Where are you from?",
-  "I'm hungry",
-  "I'm thirsty",
-];

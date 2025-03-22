@@ -35,20 +35,16 @@ class _SignUpState extends State<SignUp> {
         'username': username,
       }).select();
 
-      if (response != null) {
-        print("User added successfully!");
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        await prefs.setString('username', username);
-        await prefs.setString('password', password);
+      print("User added successfully!");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('username', username);
+      await prefs.setString('password', password);
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Home_screen()),
-        );
-      } else {
-        print("Failed to add user.");
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home_screen()),
+      );
     } catch (e) {
       print("Error adding user: $e");
     }
