@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import '/homepage.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
+import 'dart:math';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -31,7 +32,6 @@ class _LoginState extends State<Login> {
 
     if (isLoggedIn) {
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
@@ -39,28 +39,30 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> loginUser() async {
-    String email = usernameController.text.trim();
+    String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
     final supabase = Supabase.instance.client;
 
     try {
-      final response = await supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
+      final response = await supabase
+          .from('User_data') // Change 'users' to your actual table name
+          .select()
+          .eq('username', username)
+          .eq('password', password)
+          .maybeSingle();
 
-      if (response.session != null) {
+      if (response != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLoggedIn', true);
-        prefs.setString('email', email);
+        prefs.setString('username', username);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const Home_screen()),
         );
       } else {
-        _showErrorDialog("Invalid email or password");
+        _showErrorDialog("Invalid username or password.");
       }
     } catch (e) {
       _showErrorDialog("Login error: $e");
@@ -86,6 +88,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Stack(
@@ -97,6 +100,21 @@ class _LoginState extends State<Login> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: -screenHeight * 0.1,
+            left: -screenWidth * 0.1,
+            child: Transform.rotate(
+              angle: pi / 6,
+              child: Container(
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.3),
                 ),
               ),
             ),
