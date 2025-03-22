@@ -1,21 +1,27 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:silent_voice/sign_interpreter.dart';
-import 'package:silent_voice/sign_concepts.dart';
 import '/sign_dict.dart';
+import '/sign_interpreter.dart';
+import '/sign_concepts.dart';
 import '/login.dart';
+import '/account_page.dart';
+import '/app_settings.dart';
 
 class Home_screen extends StatelessWidget {
   const Home_screen({super.key});
 
   Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', false); // Clear login state
+    prefs.setBool('isLoggedIn', false);
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Login()),
-    );
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
   }
 
   @override
@@ -38,60 +44,91 @@ class Home_screen extends StatelessWidget {
             ),
           ),
           SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.person,
-                            color: Colors.black, size: screenWidth * 0.09),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => logout(context),
-                              icon: Icon(Icons.logout,
-                                  color: Colors.black,
-                                  size: screenWidth * 0.08),
+            child: Column(
+              children: [
+                /// Top Profile & Logout Section
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.05,
+                    vertical: screenHeight * 0.02,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AccountPage(),
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.settings,
-                                  color: Colors.black,
-                                  size: screenWidth * 0.08),
-                            ),
-                          ],
+                          );
+                        },
+                        icon: Icon(
+                          Icons.person,
+                          color: Colors.black,
+                          size: screenWidth * 0.09,
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-                    child: Text(
-                      "Welcome, User!",
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.05,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
                       ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => logout(context),
+                            icon: Icon(
+                              Icons.logout,
+                              color: Colors.black,
+                              size: screenWidth * 0.08,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingsPage(),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.settings,
+                              color: Colors.black,
+                              size: screenWidth * 0.08,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// Welcome Text
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  child: Text(
+                    "Welcome, User!",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.08),
-                  Container(
-                    decoration: BoxDecoration(
+                ),
+
+                SizedBox(
+                    height: screenHeight * 0.05), // Moves white container down
+
+                /// White Full-Screen Container with Buttons
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(screenWidth * 0.05),
-                        topRight: Radius.circular(screenWidth * 0.05),
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
                     ),
-                    child: Padding(
+                    child: SingleChildScrollView(
                       padding: EdgeInsets.all(screenWidth * 0.1),
                       child: Column(
                         children: [
@@ -103,12 +140,13 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignDictionary()),
+                                  builder: (context) => const SignDictionary(),
+                                ),
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05),
+                          SizedBox(
+                              height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
                             icon: Icons.record_voice_over,
                             title: "Sign Learning",
@@ -117,12 +155,14 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignLearningScreen()),
+                                  builder: (context) =>
+                                      const SignLearningScreen(),
+                                ),
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05),
+                          SizedBox(
+                              height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
                             icon: Icons.front_hand,
                             title: "Sign Interpreter",
@@ -131,8 +171,8 @@ class Home_screen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const VideoTextScreen()),
+                                  builder: (context) => const VideoTextScreen(),
+                                ),
                               );
                             },
                           ),
@@ -140,8 +180,8 @@ class Home_screen extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -159,7 +199,7 @@ class Home_screen extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 30),
+        padding: const EdgeInsets.symmetric(vertical: 35),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: const LinearGradient(
@@ -174,30 +214,32 @@ class Home_screen extends StatelessWidget {
           ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(width: 50),
+            const SizedBox(width: 20),
             Icon(icon, color: Colors.black, size: 40),
-            const SizedBox(width: 50),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black87,
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

@@ -98,7 +98,7 @@ class SignDictionary extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const VideoScreen()));
+                                          const VideoTextScreen()));
                             },
                           ),
                         );

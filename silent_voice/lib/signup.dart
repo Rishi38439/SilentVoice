@@ -3,9 +3,91 @@ import 'package:silent_voice/homepage.dart';
 import 'login.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  /// Check if user is already logged in
+  Future<void> checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      // Redirect to HomeScreen if already logged in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home_screen()),
+      );
+    }
+  }
+
+  /// Sign up user and store data in SharedPreferences
+  Future<void> signUpUser() async {
+    String username = usernameController.text;
+    String email = emailController.text;
+    String mobile = mobileController.text;
+    String password = passwordController.text;
+
+    // Print values to terminal
+    print("Username: $username");
+    print("Email: $email");
+    print("Mobile: $mobile");
+    print("Password: $password");
+
+    // Store user data in SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
+    await prefs.setString('username', username);
+    await prefs.setString('email', email);
+    await prefs.setString('mobile', mobile);
+
+    print("User details saved in SharedPreferences ✅");
+
+    // Navigate to home screen after signup
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Home_screen()),
+    );
+  }
+
+  /// Function to create text fields
+  Widget _buildTextField(
+    IconData icon,
+    String hintText,
+    TextEditingController controller, {
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.grey),
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.3),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +137,10 @@ class SignUp extends StatelessWidget {
                   const Text(
                     "Join Us,",
                     style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -65,31 +148,39 @@ class SignUp extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username"),
+                  _buildTextField(Icons.person, "Username", usernameController),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.email, "Email"),
+                  _buildTextField(Icons.email, "Email", emailController),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.phone, "Mobile Number"),
+                  _buildTextField(
+                    Icons.phone,
+                    "Mobile Number",
+                    mobileController,
+                  ),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.lock, "Password", obscureText: true),
+                  _buildTextField(
+                    Icons.lock,
+                    "Password",
+                    passwordController,
+                    obscureText: true,
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Home_screen()));
-                    },
+                    onPressed: signUpUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E86C1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 80, vertical: 15),
+                        horizontal: 80,
+                        vertical: 15,
+                      ),
                     ),
-                    child: const Text("Sign Up",
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -102,16 +193,19 @@ class SignUp extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Login()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "Login",
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ],
@@ -121,24 +215,6 @@ class SignUp extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Function to create text fields
-  Widget _buildTextField(IconData icon, String hintText,
-      {bool obscureText = false}) {
-    return TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.grey),
-        hintText: hintText,
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.3),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: BorderSide.none,
-        ),
       ),
     );
   }
