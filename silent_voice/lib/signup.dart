@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, avoid_print, duplicate_ignore
 import 'package:silent_voice/homepage.dart';
 import 'login.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
   @override
+  // ignore: library_private_types_in_public_api
   _SignUpState createState() => _SignUpState();
 }
 
@@ -32,6 +33,7 @@ class _SignUpState extends State<SignUp> {
     if (isLoggedIn) {
       // Redirect to HomeScreen if already logged in
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
@@ -60,6 +62,7 @@ class _SignUpState extends State<SignUp> {
 
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
+        // ignore: avoid_print
         print("Sign Up successful: $responseData");
 
         // Save user data in Shared Preferences
@@ -71,6 +74,7 @@ class _SignUpState extends State<SignUp> {
 
         // Redirect to HomeScreen after successful login
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const Home_screen()),
         );

@@ -8,6 +8,7 @@ class Login extends StatefulWidget {
   const Login({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginState createState() => _LoginState();
 }
 
@@ -27,6 +28,7 @@ class _LoginState extends State<Login> {
 
     if (isLoggedIn) {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
@@ -42,6 +44,7 @@ class _LoginState extends State<Login> {
       prefs.setBool('isLoggedIn', true);
 
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
@@ -188,6 +191,7 @@ class _LoginState extends State<Login> {
         prefixIcon: Icon(icon, color: Colors.grey),
         hintText: hintText,
         filled: true,
+        // ignore: deprecated_member_use
         fillColor: Colors.white.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),

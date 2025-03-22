@@ -50,9 +50,9 @@ class SignLearningScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Row: Profile & Settings Icons
+                /// **Top Row: Profile & Settings Icons**
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -67,9 +67,9 @@ class SignLearningScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.03),
 
-                // Title
+                /// **Title**
                 Center(
                   child: Text(
                     "Let's Start",
@@ -81,26 +81,28 @@ class SignLearningScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.06),
+                SizedBox(height: screenHeight * 0.07), // Adjusted spacing
 
-                // Curved White Container
+                /// **Curved White Container**
                 Expanded(
                   child: Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(screenWidth * 0.05),
-                        topRight: Radius.circular(screenWidth * 0.05),
+                        topLeft: Radius.circular(screenWidth * 0.07),
+                        topRight: Radius.circular(screenWidth * 0.07),
                       ),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(screenWidth * 0.1),
+                      padding: EdgeInsets.all(screenWidth * 0.08),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(height: screenHeight * 0.05),
+                          SizedBox(height: screenHeight * 0.06),
+                          /// **Buttons moved to the top**
                           _buildMenuButton(
                             icon: Icons.menu_book,
-                            center: true,
                             title: "Alphabets",
                             subtitle: "Learn sign language alphabets",
                             onTap: () {
@@ -114,12 +116,14 @@ class SignLearningScreen extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.05),
                           _buildMenuButton(
-                            center: true,
                             icon: Icons.numbers,
                             title: "Numbers",
                             subtitle: "Learn sign language numbers",
                             onTap: () {},
                           ),
+
+                          /// **Spacer to push remaining content to bottom**
+                          const Spacer(),
                         ],
                       ),
                     ),
@@ -133,40 +137,38 @@ class SignLearningScreen extends StatelessWidget {
     );
   }
 
-  // Custom Button Widget
+  /// **Custom Button Widget**
   Widget _buildMenuButton({
     required IconData icon,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
-    required bool center,
   }) {
-    {
-      return GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 30),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 6),
-              ),
-            ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(width: 50),
-              Icon(icon, color: Colors.black, size: 40),
-              const SizedBox(width: 50),
-              Column(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: 20),
+            Icon(icon, color: Colors.black, size: 40),
+            SizedBox(width: 20),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -186,10 +188,10 @@ class SignLearningScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
 }
