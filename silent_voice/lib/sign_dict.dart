@@ -22,7 +22,7 @@ class _SignDictionaryState extends State<SignDictionary> {
 
   Future<void> fetchSigns() async {
     try {
-      final response = await supabase.from('signs_table').select('sentence');
+      final response = await supabase.from('Dict_data').select('sentence');
 
       if (response != null && response.isNotEmpty) {
         setState(() {
@@ -116,7 +116,7 @@ class _SignDictionaryState extends State<SignDictionary> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const VideoTextScreen(),
+                                        VideoScreen(sentence: signs[index]),
                                   ),
                                 );
                               },

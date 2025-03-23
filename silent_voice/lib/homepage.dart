@@ -1,28 +1,14 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '/sign_dict.dart';
 import '/sign_interpreter.dart';
 import '/sign_concepts.dart';
-import '/login.dart';
 import '/account_page.dart';
 import '/app_settings.dart';
 
 class Home_screen extends StatelessWidget {
   const Home_screen({super.key});
-
-  Future<void> logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', false);
-
-    if (context.mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Login()),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +58,6 @@ class Home_screen extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          IconButton(
-                            onPressed: () => logout(context),
-                            icon: Icon(
-                              Icons.logout,
-                              color: Colors.black,
-                              size: screenWidth * 0.08,
-                            ),
-                          ),
                           IconButton(
                             onPressed: () {
                               Navigator.push(

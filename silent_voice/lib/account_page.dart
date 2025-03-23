@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:silent_voice/login.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false);
+
+    if (context.mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +65,9 @@ class AccountPage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.logout, color: Colors.blue),
               title: Text('Logout'),
-              onTap: () {},
+              onTap: () {
+                logout(context);
+              },
             ),
             SizedBox(height: 20),
             Text('Other',

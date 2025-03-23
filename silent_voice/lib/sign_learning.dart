@@ -1,184 +1,223 @@
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:video_player/video_player.dart';
 
-class VideoTextScreen extends StatefulWidget {
-  const VideoTextScreen({super.key});
+class VideoScreen extends StatefulWidget {
+  final String sentence;
+
+  const VideoScreen({super.key, required this.sentence});
 
   @override
-  State<VideoTextScreen> createState() => _VideoTextScreenState();
+  State<VideoScreen> createState() => _VideoScreenState();
 }
 
-class _VideoTextScreenState extends State<VideoTextScreen> {
-  List<CameraDescription>? _cameras;
-  CameraController? _controller;
-  int _selectedCameraIndex = 0;
-  bool _isRecording = false;
-  String convertedText = "Converted Text";
+class _VideoScreenState extends State<VideoScreen> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  VideoPlayerController? _videoController;
+  String? videoUrl;
+  bool isLoading = true;
+  bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
-  }
-
-  Future<void> _initializeCamera([int cameraIndex = 0]) async {
-    final cameras = await availableCameras();
-    _cameras = cameras;
-
-    if (_cameras == null || _cameras!.isEmpty) {
-      debugPrint("No cameras available");
-      return;
-    }
-
-    _controller = CameraController(
-      _cameras![cameraIndex],
-      ResolutionPreset.max, // High-quality resolution
-    );
-
-    await _controller!.initialize();
-    if (!mounted) return;
-
-    setState(() {});
-  }
-
-  Future<void> _toggleCamera() async {
-    if (_cameras == null || _cameras!.length < 2) return;
-
-    _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras!.length;
-    await _initializeCamera(_selectedCameraIndex);
-  }
-
-  Future<void> _startRecording() async {
-    if (_controller == null || _controller!.value.isRecordingVideo) return;
-
-    try {
-      await _controller!.startVideoRecording();
-      setState(() => _isRecording = true);
-    } catch (e) {
-      debugPrint("Error starting recording: $e");
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    if (_controller == null || !_controller!.value.isRecordingVideo) return;
-
-    try {
-      final videoFile = await _controller!.stopVideoRecording();
-      setState(() => _isRecording = false);
-
-      // TODO: Send videoFile.path to ML model for conversion
-      setState(() {
-        convertedText = "Interpreted text will appear here.";
-      });
-    } catch (e) {
-      debugPrint("Error stopping recording: $e");
-    }
+    fetchVideo();
   }
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _videoController?.dispose();
     super.dispose();
+  }
+
+  // Fetch video URL from Supabase
+  Future<void> fetchVideo() async {
+    try {
+      final response = await supabase
+          .from('Dict_data')
+          .select('video_url')
+          .eq('sentence', widget.sentence)
+          .single();
+
+      if (response != null && response['video_url'] != null) {
+        setState(() {
+          videoUrl = response['video_url'];
+          isLoading = false;
+
+          _videoController = VideoPlayerController.network(videoUrl!)
+            ..initialize().then((_) {
+              setState(() {});
+            });
+        });
+      }
+    } catch (error) {
+      print('Error fetching video: $error');
+      setState(() => isLoading = false);
+    }
+  }
+
+  // Toggle play/pause
+  void togglePlayPause() {
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      setState(() {
+        isPlaying = !isPlaying;
+        isPlaying ? _videoController!.play() : _videoController!.pause();
+      });
+    }
+  }
+
+  // Restart the video
+  void restartVideo() {
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      _videoController!.seekTo(Duration.zero);
+      _videoController!.play();
+      setState(() => isPlaying = true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Stack(
         children: [
-          Column(
-            children: [
-              // Gradient Header with Back and Camera Toggle Button
-              Container(
-                height: screenHeight * 0.1,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-                  ),
+          // Gradient Header
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: screenHeight * 0.1,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF67B5D1), Color(0xFFB0DFCC)],
                 ),
-                child: Padding(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                // Back Button & Centered Title
+                Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.04, vertical: 30),
+                      horizontal: screenWidth * 0.03, vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Back Button
                       IconButton(
-                        icon: const Icon(Icons.arrow_back, size: 40),
+                        icon: const Icon(Icons.arrow_back, size: 32),
                         onPressed: () {
                           Navigator.pop(context);
                         },
                       ),
-
-                      // Toggle Camera Button
-                      IconButton(
-                        icon: const Icon(Icons.flip_camera_ios, size: 40),
-                        onPressed: _toggleCamera,
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            widget.sentence,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
+                SizedBox(height: screenHeight * 0.25),
 
-              // Camera Preview with Mirror Effect for Front Camera
-              Expanded(
-                child: _controller == null || !_controller!.value.isInitialized
-                    ? const Center(child: CircularProgressIndicator())
-                    : (_selectedCameraIndex ==
-                            1 // Check if front camera is selected
-                        ? Transform(
-                            alignment: Alignment.center,
-                            transform:
-                                Matrix4.rotationY(3.1416), // Mirror effect
-                            child: CameraPreview(_controller!),
-                          )
-                        : CameraPreview(_controller!)),
-              ),
-            ],
-          ),
-
-          // Bottom Container with Recording Button
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenHeight * 0.2,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(screenWidth * 0.05),
-                  topRight: Radius.circular(screenWidth * 0.05),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    convertedText,
-                    style: TextStyle(
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 10),
-                  IconButton(
-                    icon: Icon(
-                      _isRecording ? Icons.stop : Icons.fiber_manual_record,
-                      color: _isRecording ? Colors.red : Colors.black,
-                      size: 50,
+                // Video Display Container
+                Center(
+                  child: Container(
+                    width: screenWidth * 0.5,
+                    height: screenWidth * 0.5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
                     ),
-                    onPressed: _isRecording ? _stopRecording : _startRecording,
+                    child: isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : videoUrl != null &&
+                                _videoController!.value.isInitialized
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: AspectRatio(
+                                  aspectRatio:
+                                      _videoController!.value.aspectRatio,
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: SizedBox(
+                                      width: _videoController!.value.size.width,
+                                      height:
+                                          _videoController!.value.size.height,
+                                      child: VideoPlayer(_videoController!),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const Center(
+                                child: Text(
+                                  "Video not available",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
                   ),
-                ],
-              ),
+                ),
+
+                SizedBox(height: screenHeight * 0.05),
+
+                // Play/Pause and Refresh Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildIconButton(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      togglePlayPause,
+                    ),
+                    SizedBox(width: screenWidth * 0.1),
+                    _buildIconButton(Icons.refresh, restartVideo),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Custom Icon Button
+  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: Colors.black),
+        onPressed: onPressed,
       ),
     );
   }
