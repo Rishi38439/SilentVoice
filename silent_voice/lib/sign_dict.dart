@@ -24,6 +24,7 @@ class _SignDictionaryState extends State<SignDictionary> {
     try {
       final response = await supabase.from('Dict_data').select('sentence');
 
+      // ignore: unnecessary_null_comparison
       if (response != null && response.isNotEmpty) {
         setState(() {
           signs =

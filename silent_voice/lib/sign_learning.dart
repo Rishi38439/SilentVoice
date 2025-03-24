@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:video_player/video_player.dart';
@@ -39,6 +41,7 @@ class _VideoScreenState extends State<VideoScreen> {
           .eq('sentence', widget.sentence)
           .single();
 
+      // ignore: unnecessary_null_comparison
       if (response != null && response['video_url'] != null) {
         setState(() {
           videoUrl = response['video_url'];

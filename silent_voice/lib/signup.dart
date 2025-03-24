@@ -27,7 +27,7 @@ class _SignUpState extends State<SignUp> {
     final supabase = Supabase.instance.client;
 
     try {
-      print(email);
+      // ignore: unused_local_variable
       final response = await supabase.from('User_data').insert({
         'email': email,
         'mobile_no': mobileNo,

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:silent_voice/alphabet_learning.dart';
+import 'package:silent_voice/num_learning.dart';
 import 'dart:math';
 
 class SignLearningScreen extends StatelessWidget {
@@ -120,7 +121,13 @@ class SignLearningScreen extends StatelessWidget {
                             icon: Icons.numbers,
                             title: "Numbers",
                             subtitle: "Learn sign language numbers",
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const NumberScreen()),
+                              );
+                            },
                           ),
 
                           /// **Spacer to push remaining content to bottom**
