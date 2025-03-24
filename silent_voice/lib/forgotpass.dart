@@ -1,10 +1,55 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
+
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
+  final TextEditingController emailController = TextEditingController();
+  final SupabaseClient supabase = Supabase.instance.client;
+
+  Future<void> handlePasswordReset() async {
+    String email = emailController.text.trim();
+
+    if (email.isEmpty) {
+      _showMessage("Please enter your email.");
+      return;
+    }
+
+    // Step 1: Check if email exists in the user_data table
+    final response = await supabase
+        .from('user_data')
+        .select()
+        .eq('email', email)
+        .maybeSingle();
+
+    if (response == null) {
+      _showMessage("Email not found. Please enter a registered email.");
+      return;
+    }
+
+    // Step 2: If exists, send password reset email
+    try {
+      await supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo:
+            'https://yourapp.com/reset-password', // Update with your redirect URL
+      );
+      _showMessage("Password reset email sent! Check your inbox.");
+    } catch (error) {
+      _showMessage("Error sending reset email. Please try again later.");
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +59,7 @@ class ForgotPassword extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background with gradient
+          // Background Gradient
           Positioned.fill(
             child: Container(
               decoration: const BoxDecoration(
@@ -26,31 +71,12 @@ class ForgotPassword extends StatelessWidget {
               ),
             ),
           ),
-
-          // Faded Circle (Scales with screen size)
-          Positioned(
-            top: -screenHeight * 0.15,
-            left: -screenWidth * 0.1,
-            child: Transform.rotate(
-              angle: pi / 6,
-              child: Container(
-                width: screenWidth * 0.7,
-                height: screenWidth * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(screenWidth * 0.35),
-                ),
-              ),
-            ),
-          ),
-
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Title
                   Text(
                     "Forgot Password",
                     style: TextStyle(
@@ -60,12 +86,10 @@ class ForgotPassword extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.03),
-
-                  // Email TextField with faded effect
                   TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email,
-                          color: Colors.grey, size: screenWidth * 0.06),
+                      prefixIcon: Icon(Icons.email, color: Colors.grey),
                       hintText: "E-mail",
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.1),
@@ -76,54 +100,26 @@ class ForgotPassword extends StatelessWidget {
                     ),
                     style: TextStyle(fontSize: screenWidth * 0.04),
                   ),
-
-                  SizedBox(height: screenHeight * 0.01),
-
-                  // Buttons Row (Back & Send Email)
-                  Row(
-                    children: [
-                      // Back Button
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.01),
-                          ),
-                          child: Text("Back",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: screenWidth * 0.04)),
-                        ),
+                  SizedBox(height: screenHeight * 0.02),
+                  ElevatedButton(
+                    onPressed: handlePasswordReset,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.015,
+                        horizontal: screenWidth * 0.1,
                       ),
-                      SizedBox(
-                          width: screenWidth * 0.03), // Space between buttons
-
-                      // Send Email Button
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white.withOpacity(0.2),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.01),
-                          ),
-                          child: Text("Send Email",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: screenWidth * 0.04)),
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
+                    ),
+                    child: Text(
+                      "Send Email",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.04,
+                      ),
+                    ),
                   ),
                 ],
               ),

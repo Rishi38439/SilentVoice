@@ -1,14 +1,18 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
 import '/homepage.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
-import 'package:postgres/postgres.dart';
+import 'dart:math';
 
 class Login extends StatefulWidget {
   const Login({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginState createState() => _LoginState();
 }
 
@@ -38,24 +42,17 @@ class _LoginState extends State<Login> {
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
-    final connection = PostgreSQLConnection(
-      "localhost", // e.g., "192.168.1.100"
-      5432, // Default PostgreSQL port
-      "Login_db",
-    );
+    final supabase = Supabase.instance.client;
 
     try {
-      await connection.open();
+      final response = await supabase
+          .from('User_data') // Change 'users' to your actual table name
+          .select()
+          .eq('username', username)
+          .eq('password', password)
+          .maybeSingle();
 
-      List<List<dynamic>> results = await connection.query(
-        "SELECT * FROM users WHERE username = @username AND password = @password",
-        substitutionValues: {
-          "username": username,
-          "password": password, // ⚠️ Hash passwords in real apps!
-        },
-      );
-
-      if (results.isNotEmpty) {
+      if (response != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLoggedIn', true);
         prefs.setString('username', username);
@@ -65,12 +62,10 @@ class _LoginState extends State<Login> {
           MaterialPageRoute(builder: (context) => const Home_screen()),
         );
       } else {
-        _showErrorDialog("Invalid username or password");
+        _showErrorDialog("Invalid username or password.");
       }
     } catch (e) {
-      _showErrorDialog("Database error: $e");
-    } finally {
-      await connection.close();
+      _showErrorDialog("Login error: $e");
     }
   }
 
@@ -109,6 +104,21 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
+          Positioned(
+            top: -screenHeight * 0.1,
+            left: -screenWidth * 0.1,
+            child: Transform.rotate(
+              angle: pi / 6,
+              child: Container(
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.3),
+                ),
+              ),
+            ),
+          ),
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
@@ -130,7 +140,7 @@ class _LoginState extends State<Login> {
                     style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username", usernameController),
+                  _buildTextField(Icons.email, "Email", usernameController),
                   const SizedBox(height: 20),
                   _buildTextField(Icons.lock, "Password", passwordController,
                       obscureText: true),
