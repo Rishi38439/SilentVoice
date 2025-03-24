@@ -4,6 +4,7 @@ import 'login.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -16,6 +17,38 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  Future<void> addUser({
+    required String email,
+    required String mobileNo,
+    required String password,
+    required String username,
+  }) async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      // ignore: unused_local_variable
+      final response = await supabase.from('User_data').insert({
+        'email': email,
+        'mobile_no': mobileNo,
+        'password': password, // You should hash the password for security
+        'username': username,
+      }).select();
+
+      print("User added successfully!");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await prefs.setString('username', username);
+      await prefs.setString('password', password);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Home_screen()),
+      );
+    } catch (e) {
+      print("Error adding user: $e");
+    }
+  }
 
   @override
   void initState() {
@@ -35,35 +68,6 @@ class _SignUpState extends State<SignUp> {
         MaterialPageRoute(builder: (context) => const Home_screen()),
       );
     }
-  }
-
-  /// Sign up user and store data in SharedPreferences
-  Future<void> signUpUser() async {
-    String username = usernameController.text;
-    String email = emailController.text;
-    String mobile = mobileController.text;
-    String password = passwordController.text;
-
-    // Print values to terminal
-    print("Username: $username");
-    print("Email: $email");
-    print("Mobile: $mobile");
-    print("Password: $password");
-
-    // Store user data in SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true);
-    await prefs.setString('username', username);
-    await prefs.setString('email', email);
-    await prefs.setString('mobile', mobile);
-
-    print("User details saved in SharedPreferences ✅");
-
-    // Navigate to home screen after signup
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Home_screen()),
-    );
   }
 
   /// Function to create text fields
@@ -153,20 +157,20 @@ class _SignUpState extends State<SignUp> {
                   _buildTextField(Icons.email, "Email", emailController),
                   const SizedBox(height: 20),
                   _buildTextField(
-                    Icons.phone,
-                    "Mobile Number",
-                    mobileController,
-                  ),
+                      Icons.phone, "Mobile Number", mobileController),
                   const SizedBox(height: 20),
-                  _buildTextField(
-                    Icons.lock,
-                    "Password",
-                    passwordController,
-                    obscureText: true,
-                  ),
+                  _buildTextField(Icons.lock, "Password", passwordController,
+                      obscureText: true),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: signUpUser,
+                    onPressed: () async {
+                      await addUser(
+                        email: usernameController.text,
+                        mobileNo: mobileController.text,
+                        password: passwordController.text,
+                        username: usernameController.text,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E86C1),
                       shape: RoundedRectangleBorder(

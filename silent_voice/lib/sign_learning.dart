@@ -1,9 +1,82 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:video_player/video_player.dart';
 
-class VideoScreen extends StatelessWidget {
-  const VideoScreen({super.key});
+class VideoScreen extends StatefulWidget {
+  final String sentence;
+
+  const VideoScreen({super.key, required this.sentence});
+
+  @override
+  State<VideoScreen> createState() => _VideoScreenState();
+}
+
+class _VideoScreenState extends State<VideoScreen> {
+  final SupabaseClient supabase = Supabase.instance.client;
+  VideoPlayerController? _videoController;
+  String? videoUrl;
+  bool isLoading = true;
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchVideo();
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
+  // Fetch video URL from Supabase
+  Future<void> fetchVideo() async {
+    try {
+      final response = await supabase
+          .from('Dict_data')
+          .select('video_url')
+          .eq('sentence', widget.sentence)
+          .single();
+
+      // ignore: unnecessary_null_comparison
+      if (response != null && response['video_url'] != null) {
+        setState(() {
+          videoUrl = response['video_url'];
+          isLoading = false;
+
+          _videoController = VideoPlayerController.network(videoUrl!)
+            ..initialize().then((_) {
+              setState(() {});
+            });
+        });
+      }
+    } catch (error) {
+      print('Error fetching video: $error');
+      setState(() => isLoading = false);
+    }
+  }
+
+  // Toggle play/pause
+  void togglePlayPause() {
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      setState(() {
+        isPlaying = !isPlaying;
+        isPlaying ? _videoController!.play() : _videoController!.pause();
+      });
+    }
+  }
+
+  // Restart the video
+  void restartVideo() {
+    if (_videoController != null && _videoController!.value.isInitialized) {
+      _videoController!.seekTo(Duration.zero);
+      _videoController!.play();
+      setState(() => isPlaying = true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +106,6 @@ class VideoScreen extends StatelessWidget {
               ),
             ),
           ),
-
           SafeArea(
             child: Column(
               children: [
@@ -52,7 +124,7 @@ class VideoScreen extends StatelessWidget {
                       Expanded(
                         child: Center(
                           child: Text(
-                            "Hello",
+                            widget.sentence,
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -63,10 +135,9 @@ class VideoScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(height: screenHeight * 0.25),
 
-                SizedBox(height: screenHeight * 0.25), // Dynamic spacing
-
-                // Centered Dataset Video Container
+                // Video Display Container
                 Center(
                   child: Container(
                     width: screenWidth * 0.5,
@@ -82,32 +153,49 @@ class VideoScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Center(
-                      child: Text(
-                        "Dataset Video",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
+                    child: isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : videoUrl != null &&
+                                _videoController!.value.isInitialized
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: AspectRatio(
+                                  aspectRatio:
+                                      _videoController!.value.aspectRatio,
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: SizedBox(
+                                      width: _videoController!.value.size.width,
+                                      height:
+                                          _videoController!.value.size.height,
+                                      child: VideoPlayer(_videoController!),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : const Center(
+                                child: Text(
+                                  "Video not available",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
                   ),
                 ),
 
                 SizedBox(height: screenHeight * 0.05),
 
-                // Play and Refresh Buttons
+                // Play/Pause and Refresh Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildIconButton(Icons.play_arrow, () {
-                      // Play action
-                    }),
-                    SizedBox(width: screenWidth * 0.1), // Dynamic spacing
-                    _buildIconButton(Icons.refresh, () {
-                      // Refresh action
-                    }),
+                    _buildIconButton(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      togglePlayPause,
+                    ),
+                    SizedBox(width: screenWidth * 0.1),
+                    _buildIconButton(Icons.refresh, restartVideo),
                   ],
                 ),
-
-                SizedBox(height: screenHeight * 0.1),
               ],
             ),
           ),

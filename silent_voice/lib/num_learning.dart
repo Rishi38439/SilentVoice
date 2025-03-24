@@ -3,14 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AlphabetsScreen extends StatefulWidget {
-  const AlphabetsScreen({super.key});
+class NumberScreen extends StatefulWidget {
+  const NumberScreen({super.key});
 
   @override
-  State<AlphabetsScreen> createState() => _AlphabetsScreenState();
+  State<NumberScreen> createState() => _NumberScreenState();
 }
 
-class _AlphabetsScreenState extends State<AlphabetsScreen> {
+class _NumberScreenState extends State<NumberScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
   List<Map<String, dynamic>> dataset = [];
   int currentIndex = 0;
@@ -22,7 +22,7 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
   }
 
   Future<void> fetchData() async {
-    final response = await supabase.from('Alpha_learning').select();
+    final response = await supabase.from('num_learning').select();
     if (response.isNotEmpty) {
       setState(() {
         dataset = List<Map<String, dynamic>>.from(response);
@@ -81,7 +81,7 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        'Alphabets',
+                        'Numbers',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 24,
@@ -130,7 +130,7 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
                             child: dataset.isNotEmpty
                                 ? Center(
                                     child: Image.network(
-                                      dataset[currentIndex]['alpha_sign'],
+                                      dataset[currentIndex]['num_sign'],
                                       fit: BoxFit.cover,
                                     ),
                                   )
@@ -145,7 +145,7 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
                     ),
                     Text(
                       dataset.isNotEmpty
-                          ? dataset[currentIndex]['alphabet']
+                          ? dataset[currentIndex]['numbers']
                           : 'Loading...',
                       style: const TextStyle(
                         fontSize: 18,
