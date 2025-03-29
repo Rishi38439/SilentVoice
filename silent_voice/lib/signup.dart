@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, avoid_print, duplicate_ignore
+// ignore_for_file: deprecated_member_use, avoid_print, duplicate_ignore, depend_on_referenced_packages
 import 'package:silent_voice/homepage.dart';
 import 'login.dart';
 import 'package:flutter/material.dart';

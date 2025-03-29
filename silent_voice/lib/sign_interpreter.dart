@@ -14,8 +14,8 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
   List<CameraDescription>? _cameras;
   CameraController? _controller;
   int _selectedCameraIndex = 0;
-  bool _isRecording = false;
-  String convertedText = "Converted Text";
+  String recognizedText = "Recognized Text";
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -34,52 +34,51 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
 
     _controller = CameraController(
       _cameras![cameraIndex],
-      ResolutionPreset.max, // High-quality resolution
+      ResolutionPreset.medium, // Medium quality for better performance
+      imageFormatGroup: ImageFormatGroup.bgra8888, // Optimized for ML processing
     );
 
     await _controller!.initialize();
-    if (!mounted) return;
+    
+    // Start continuous frame processing
+    _controller!.startImageStream((CameraImage image) {
+      if (!_isProcessing) {
+        _processFrame(image);
+      }
+    });
 
+    if (!mounted) return;
     setState(() {});
+  }
+
+  Future<void> _processFrame(CameraImage image) async {
+    _isProcessing = true;
+    try {
+      // TODO: Process frame using ML model
+      // This is where you'll add the ML model integration
+      // For now, we'll just simulate processing
+      await Future.delayed(const Duration(milliseconds: 100));
+      setState(() {
+        recognizedText = "Live recognition in progress...";
+      });
+    } catch (e) {
+      debugPrint("Error processing frame: $e");
+    } finally {
+      _isProcessing = false;
+    }
   }
 
   Future<void> _toggleCamera() async {
     if (_cameras == null || _cameras!.length < 2) return;
 
+    await _controller?.stopImageStream();
     _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras!.length;
     await _initializeCamera(_selectedCameraIndex);
   }
 
-  Future<void> _startRecording() async {
-    if (_controller == null || _controller!.value.isRecordingVideo) return;
-
-    try {
-      await _controller!.startVideoRecording();
-      setState(() => _isRecording = true);
-    } catch (e) {
-      debugPrint("Error starting recording: $e");
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    if (_controller == null || !_controller!.value.isRecordingVideo) return;
-
-    try {
-      final videoFile = await _controller!.stopVideoRecording();
-      setState(() => _isRecording = false);
-
-      // TODO: Send videoFile.path to ML model for conversion
-      setState(() {
-        convertedText = "Interpreted text will appear here.";
-      });
-
-    } catch (e) {
-      debugPrint("Error stopping recording: $e");
-    }
-  }
-
   @override
   void dispose() {
+    _controller?.stopImageStream();
     _controller?.dispose();
     super.dispose();
   }
@@ -109,15 +108,10 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Back Button
                       IconButton(
                         icon: const Icon(Icons.arrow_back, size: 40),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () => Navigator.pop(context),
                       ),
-
-                      // Toggle Camera Button
                       IconButton(
                         icon: const Icon(Icons.flip_camera_ios, size: 40),
                         onPressed: _toggleCamera,
@@ -131,10 +125,10 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
               Expanded(
                 child: _controller == null || !_controller!.value.isInitialized
                     ? const Center(child: CircularProgressIndicator())
-                    : (_selectedCameraIndex == 1 // Check if front camera is selected
+                    : (_selectedCameraIndex == 1
                         ? Transform(
                             alignment: Alignment.center,
-                            transform: Matrix4.rotationY(3.1416), // Mirror effect
+                            transform: Matrix4.rotationY(3.1416),
                             child: CameraPreview(_controller!),
                           )
                         : CameraPreview(_controller!)),
@@ -142,7 +136,7 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
             ],
           ),
 
-          // Bottom Container with Recording Button
+          // Bottom Container with Recognition Text
           Positioned(
             bottom: 0,
             left: 0,
@@ -156,23 +150,14 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
                   topRight: Radius.circular(screenWidth * 0.05),
                 ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    convertedText,
-                    style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.w500),
+              child: Center(
+                child: Text(
+                  recognizedText,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const SizedBox(height: 10),
-                  IconButton(
-                    icon: Icon(
-                      _isRecording ? Icons.stop : Icons.fiber_manual_record,
-                      color: _isRecording ? Colors.red : Colors.black,
-                      size: 50,
-                    ),
-                    onPressed: _isRecording ? _stopRecording : _startRecording,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
