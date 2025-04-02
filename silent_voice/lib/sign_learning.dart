@@ -41,17 +41,21 @@ class _VideoScreenState extends State<VideoScreen> {
           .eq('sentence', widget.sentence)
           .single();
 
-      // ignore: unnecessary_null_comparison
-      if (response != null && response['video_url'] != null) {
+      if (response['video_url'] != null) {
         setState(() {
           videoUrl = response['video_url'];
-          isLoading = false;
-
           _videoController = VideoPlayerController.network(videoUrl!)
             ..initialize().then((_) {
-              setState(() {});
+              setState(() {
+                isLoading = false;
+              });
+            }).catchError((error) {
+              print('Error initializing video: $error');
+              setState(() => isLoading = false);
             });
         });
+      } else {
+        setState(() => isLoading = false);
       }
     } catch (error) {
       print('Error fetching video: $error');
@@ -126,9 +130,7 @@ class _VideoScreenState extends State<VideoScreen> {
                           child: Text(
                             widget.sentence,
                             style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -140,8 +142,8 @@ class _VideoScreenState extends State<VideoScreen> {
                 // Video Display Container
                 Center(
                   child: Container(
-                    width: screenWidth * 0.5,
-                    height: screenWidth * 0.5,
+                    width: screenWidth * 0.8,
+                    height: screenWidth * 0.8, // Square container
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(20),
@@ -156,20 +158,19 @@ class _VideoScreenState extends State<VideoScreen> {
                     child: isLoading
                         ? const Center(child: CircularProgressIndicator())
                         : videoUrl != null &&
+                                _videoController != null &&
                                 _videoController!.value.isInitialized
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      _videoController!.value.aspectRatio,
-                                  child: FittedBox(
-                                    fit: BoxFit.cover,
-                                    child: SizedBox(
-                                      width: _videoController!.value.size.width,
-                                      height:
-                                          _videoController!.value.size.height,
-                                      child: VideoPlayer(_videoController!),
-                                    ),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: screenWidth * 0.8,
+                                    maxHeight: screenWidth * 0.8,
+                                  ),
+                                  child: AspectRatio(
+                                    aspectRatio:
+                                        _videoController!.value.aspectRatio,
+                                    child: VideoPlayer(_videoController!),
                                   ),
                                 ),
                               )

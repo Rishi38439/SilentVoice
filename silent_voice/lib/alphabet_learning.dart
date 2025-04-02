@@ -1,5 +1,4 @@
 // ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -12,20 +11,46 @@ class AlphabetsScreen extends StatefulWidget {
 
 class _AlphabetsScreenState extends State<AlphabetsScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
-  List<Map<String, dynamic>> dataset = [];
+  List<Map<String, dynamic>> dataset = []; // Store all alphabets
   int currentIndex = 0;
+  bool isLoading = true; // Track loading state
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // Fetch data once when the screen loads
   }
 
+  /// Fetch all alphabet data ONCE when the screen loads
   Future<void> fetchData() async {
-    final response = await supabase.from('Alpha_learning').select();
-    if (response.isNotEmpty) {
+    try {
+      final response = await supabase.from('Alpha_learning').select();
+
+      if (response.isNotEmpty) {
+        dataset =
+            List<Map<String, dynamic>>.from(response).map((item) {
+              String? imageUrl = item['alphabets_images']?.toString().trim();
+              imageUrl = imageUrl?.replaceAll(RegExp(r'%0D%0A|\s+'), '') ?? '';
+
+              if (!imageUrl.startsWith("http")) {
+                imageUrl =
+                    "https://xxfbilctljijrknmhpml.supabase.co/storage/v1/object/public/alphabets-images/$imageUrl";
+              }
+
+              return {
+                'alphabets_images': imageUrl,
+                'alphabet': item['alphabet']?.toString().trim() ?? 'Unknown',
+              };
+            }).toList();
+
+        setState(() {
+          isLoading = false; // Stop loading when data is fetched
+        });
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
       setState(() {
-        dataset = List<Map<String, dynamic>>.from(response);
+        isLoading = false; // Stop loading even if there's an error
       });
     }
   }
@@ -52,7 +77,7 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Adjusted Header with Reduced Height
+            // Top Header
             Container(
               height: screenHeight * 0.08,
               decoration: const BoxDecoration(
@@ -97,65 +122,81 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
 
             SizedBox(height: screenHeight * 0.02),
 
-            // Data Display with Navigation
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_left, size: 50),
-                          onPressed: dataset.isNotEmpty ? showPrevious : null,
-                        ),
-                        Flexible(
-                          child: Container(
-                            margin:
-                                EdgeInsets.only(bottom: screenHeight * 0.02),
-                            width: screenWidth * 0.7,
-                            height: screenHeight * 0.3,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: dataset.isNotEmpty
-                                ? Center(
-                                    child: Image.network(
-                                      dataset[currentIndex]['alpha_sign'],
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                : const Center(child: Text('Loading...')),
+            // Show loading indicator while fetching data
+            if (isLoading)
+              const Expanded(child: Center(child: CircularProgressIndicator()))
+            else if (dataset.isEmpty)
+              const Expanded(child: Center(child: Text("No data available.")))
+            else
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_left, size: 50),
+                            onPressed: showPrevious,
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_right, size: 50),
-                          onPressed: dataset.isNotEmpty ? showNext : null,
-                        ),
-                      ],
-                    ),
-                    Text(
-                      dataset.isNotEmpty
-                          ? dataset[currentIndex]['alphabet']
-                          : 'Loading...',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: screenHeight * 0.02,
+                              ),
+                              width: screenWidth * 0.7,
+                              height: screenHeight * 0.3,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Image.network(
+                                dataset[currentIndex]['alphabets_images'] ?? '',
+                                fit: BoxFit.cover,
+                                loadingBuilder: (
+                                  context,
+                                  child,
+                                  loadingProgress,
+                                ) {
+                                  if (loadingProgress == null) return child;
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(
+                                    Icons.broken_image,
+                                    size: 50,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_right, size: 50),
+                            onPressed: showNext,
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      Text(
+                        dataset[currentIndex]['alphabet'] ?? 'Unknown',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
