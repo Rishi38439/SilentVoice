@@ -35,11 +35,12 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
     _controller = CameraController(
       _cameras![cameraIndex],
       ResolutionPreset.medium, // Medium quality for better performance
-      imageFormatGroup: ImageFormatGroup.bgra8888, // Optimized for ML processing
+      imageFormatGroup:
+          ImageFormatGroup.bgra8888, // Optimized for ML processing
     );
 
     await _controller!.initialize();
-    
+
     // Start continuous frame processing
     _controller!.startImageStream((CameraImage image) {
       if (!_isProcessing) {
@@ -104,13 +105,14 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: 30),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.04, vertical: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, size: 40),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => Navigator.pop(context), //chage here
                       ),
                       IconButton(
                         icon: const Icon(Icons.flip_camera_ios, size: 40),

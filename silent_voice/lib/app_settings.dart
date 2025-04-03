@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -27,11 +28,12 @@ class SettingsPage extends StatelessWidget {
             _buildSettingItem(Icons.dark_mode, "Dark / Light Mode"),
             _buildSettingItem(
                 Icons.notifications, "Enable / Disable app notification"),
+            _buildDeleteCacheItem(context), // Delete Cache Option
             const SizedBox(height: 20),
             _buildSectionTitle("Support & Legal"),
             _buildSettingItem(Icons.help, "Help & FAQs"),
             _buildSettingItem(Icons.feedback, "Report a Problem / Feedback"),
-            _buildSettingItem(Icons.description, "Terms & conditions"),
+            _buildSettingItem(Icons.description, "Terms & Conditions"),
             _buildSettingItem(Icons.privacy_tip, "Privacy Policy"),
             const SizedBox(height: 20),
             _buildSectionTitle("App Info"),
@@ -66,5 +68,60 @@ class SettingsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  // Widget for "Delete Cache" Setting Item
+  Widget _buildDeleteCacheItem(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
+        leading: const Icon(Icons.delete, color: Colors.red),
+        title: const Text("Delete Cache", style: TextStyle(fontSize: 16)),
+        onTap: () {
+          _showDeleteCacheDialog(context);
+        },
+      ),
+    );
+  }
+
+  // Show confirmation dialog before deleting cache
+  void _showDeleteCacheDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Cache"),
+          content:
+              const Text("Are you sure you want to clear all cached data?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _clearCache();
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Cache cleared successfully!"),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to clear cache from SharedPreferences
+  Future<void> _clearCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clears all stored data
+    print("Cache cleared successfully!");
   }
 }

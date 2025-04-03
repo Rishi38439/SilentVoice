@@ -1,0 +1,2 @@
+D:/Programs/SilentVoice/silent_voice/android/app/.cxx/RelWithDebInfo/132l3z77/x86_64/CMakeFiles/edit_cache.dir
+D:/Programs/SilentVoice/silent_voice/android/app/.cxx/RelWithDebInfo/132l3z77/x86_64/CMakeFiles/rebuild_cache.dir

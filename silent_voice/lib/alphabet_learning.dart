@@ -1,6 +1,7 @@
-// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class AlphabetsScreen extends StatefulWidget {
   const AlphabetsScreen({super.key});
@@ -11,46 +12,64 @@ class AlphabetsScreen extends StatefulWidget {
 
 class _AlphabetsScreenState extends State<AlphabetsScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
-  List<Map<String, dynamic>> dataset = []; // Store all alphabets
+  List<Map<String, dynamic>> dataset = [];
   int currentIndex = 0;
-  bool isLoading = true; // Track loading state
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch data once when the screen loads
+    checkAndFetchData();
   }
 
-  /// Fetch all alphabet data ONCE when the screen loads
+  /// Check if it's the first time and decide whether to fetch data or load cache
+  Future<void> checkAndFetchData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? cachedData = prefs.getString('alphabets_cache');
+
+    if (cachedData != null) {
+      // Load cached data
+      setState(() {
+        dataset = List<Map<String, dynamic>>.from(jsonDecode(cachedData));
+        isLoading = false;
+      });
+    } else {
+      // Fetch from Supabase and store it in cache
+      await fetchData();
+    }
+  }
+
+  /// Fetch data from Supabase and store in cache
   Future<void> fetchData() async {
     try {
-      final response = await supabase.from('Alpha_learning').select();
+      final response = await supabase
+          .from('Alpha_learning')
+          .select()
+          .order('alphabet', ascending: true, nullsFirst: false);
 
       if (response.isNotEmpty) {
-        dataset =
-            List<Map<String, dynamic>>.from(response).map((item) {
-              String? imageUrl = item['alphabets_images']?.toString().trim();
-              imageUrl = imageUrl?.replaceAll(RegExp(r'%0D%0A|\s+'), '') ?? '';
+        dataset = response.map<Map<String, dynamic>>((item) {
+          String? imageUrl = item['alphabets_images']?.toString().trim();
+          imageUrl = imageUrl?.replaceAll(RegExp(r'%0D%0A|\s+'), '') ?? '';
 
-              if (!imageUrl.startsWith("http")) {
-                imageUrl =
-                    "https://xxfbilctljijrknmhpml.supabase.co/storage/v1/object/public/alphabets-images/$imageUrl";
-              }
+          return {
+            'alphabets_images': imageUrl,
+            'alphabet': item['alphabet']?.toString().trim() ?? 'Unknown',
+          };
+        }).toList();
 
-              return {
-                'alphabets_images': imageUrl,
-                'alphabet': item['alphabet']?.toString().trim() ?? 'Unknown',
-              };
-            }).toList();
+        // Store sorted data in local storage
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('alphabets_cache', jsonEncode(dataset));
 
         setState(() {
-          isLoading = false; // Stop loading when data is fetched
+          isLoading = false;
         });
       }
     } catch (e) {
       print("Error fetching data: $e");
       setState(() {
-        isLoading = false; // Stop loading even if there's an error
+        isLoading = false;
       });
     }
   }
@@ -122,7 +141,6 @@ class _AlphabetsScreenState extends State<AlphabetsScreen> {
 
             SizedBox(height: screenHeight * 0.02),
 
-            // Show loading indicator while fetching data
             if (isLoading)
               const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (dataset.isEmpty)
