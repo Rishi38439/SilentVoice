@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:silent_voice/l10n/app_localization.dart';
 import '/sign_dict.dart';
 import '/sign_interpreter.dart';
 import '/sign_concepts.dart';
@@ -10,7 +11,8 @@ import '/account_page.dart';
 import '/settings_page.dart';
 
 class Home_screen extends StatelessWidget {
-  const Home_screen({super.key});
+  final Function(Locale) setLocale;
+  const Home_screen({super.key, required this.setLocale});
 
   Future<void> logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -19,7 +21,7 @@ class Home_screen extends StatelessWidget {
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Login()),
+        MaterialPageRoute(builder: (context) => Login(setLocale: (locale) {})),
       );
     }
   }
@@ -105,7 +107,7 @@ class Home_screen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Text(
-                    "Welcome, User!",
+                    AppLocalizations.of(context)?.translate("welcome_user") ?? "Welcome, User!",
                     style: TextStyle(
                       fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
@@ -132,9 +134,10 @@ class Home_screen extends StatelessWidget {
                       child: Column(
                         children: [
                           _buildMenuButton(
+                            context: context,
                             icon: Icons.menu_book,
-                            title: "Sign Dictionary",
-                            subtitle: "Explore sign language words",
+                            titleKey: "sign_dictionary",
+                            subtitleKey: "sign_dictionary_subtitle",
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -146,9 +149,10 @@ class Home_screen extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
+                            context: context,
                             icon: Icons.record_voice_over,
-                            title: "Sign Learning",
-                            subtitle: "Improve your signing skills",
+                            titleKey: "sign_learning",
+                            subtitleKey: "sign_learning_subtitle",
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -161,9 +165,10 @@ class Home_screen extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
+                            context: context,
                             icon: Icons.front_hand,
-                            title: "Sign Interpreter",
-                            subtitle: "Get live interpretation",
+                            titleKey: "sign_interpreter",
+                            subtitleKey: "sign_interpreter_subtitle",
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -188,9 +193,10 @@ class Home_screen extends StatelessWidget {
   }
 
   Widget _buildMenuButton({
+    required BuildContext context,
     required IconData icon,
-    required String title,
-    required String subtitle,
+    required String titleKey,
+    required String subtitleKey,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
@@ -222,7 +228,7 @@ class Home_screen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    AppLocalizations.of(context)?.translate(titleKey) ?? titleKey,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -230,7 +236,7 @@ class Home_screen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    subtitle,
+                    AppLocalizations.of(context)?.translate(subtitleKey) ?? subtitleKey,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black87,

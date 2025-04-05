@@ -35,7 +35,7 @@ class _SignUpState extends State<SignUp> {
       Navigator.pushReplacement(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const Home_screen()),
+        MaterialPageRoute(builder: (context) => Home_screen(setLocale: (locale) {})),
       );
     }
   }
@@ -76,7 +76,7 @@ class _SignUpState extends State<SignUp> {
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => const Home_screen()),
+          MaterialPageRoute(builder: (context) => Home_screen(setLocale: (locale) {})),
         );
       } else {
         print("Sign Up failed: ${response.body}");
@@ -215,7 +215,7 @@ class _SignUpState extends State<SignUp> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Login(),
+                              builder: (context) => Login(setLocale: (locale) {}),
                             ),
                           );
                         },

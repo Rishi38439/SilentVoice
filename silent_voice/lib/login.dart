@@ -1,14 +1,18 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '/homepage.dart';
+import 'package:silent_voice/homepage.dart';
+import 'package:silent_voice/l10n/app_localization.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final Function(Locale) setLocale;
+
+  const Login({super.key, required this.setLocale});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginState createState() => _LoginState();
 }
 
@@ -28,9 +32,10 @@ class _LoginState extends State<Login> {
 
     if (isLoggedIn) {
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const Home_screen()),
+        MaterialPageRoute(
+          builder: (context) => Home_screen(setLocale: widget.setLocale),
+        ),
       );
     }
   }
@@ -44,9 +49,10 @@ class _LoginState extends State<Login> {
       prefs.setBool('isLoggedIn', true);
 
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => const Home_screen()),
+        MaterialPageRoute(
+          builder: (context) => Home_screen(setLocale: widget.setLocale),
+        ),
       );
     } else {
       _showErrorDialog("Invalid username or password");
@@ -105,10 +111,18 @@ class _LoginState extends State<Login> {
                     style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(Icons.person, "Username", usernameController),
+                  _buildTextField(
+                    Icons.person,
+                    AppLocalizations.of(context)?.translate('username') ?? 'Username',
+                    usernameController,
+                  ),
                   const SizedBox(height: 20),
-                  _buildTextField(Icons.lock, "Password", passwordController,
-                      obscureText: true),
+                  _buildTextField(
+                    Icons.lock,
+                    AppLocalizations.of(context)?.translate('password') ?? 'Password',
+                    passwordController,
+                    obscureText: true,
+                  ),
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
@@ -191,7 +205,6 @@ class _LoginState extends State<Login> {
         prefixIcon: Icon(icon, color: Colors.grey),
         hintText: hintText,
         filled: true,
-        // ignore: deprecated_member_use
         fillColor: Colors.white.withOpacity(0.3),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
