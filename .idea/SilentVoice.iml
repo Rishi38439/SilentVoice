@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="ALLOW_USER_CONFIGURATION" value="false" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/app/src/main/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/app/src/main/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/app/src/main/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/app/src/main/libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/app/src/main/proguard_logs" />
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/example/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/example/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/path_provider_foundation/example/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/example/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/example/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/ios/.symlinks/plugins/shared_preferences_foundation/example/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/build" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/silent_voice/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/build" />
+      <sourceFolder url="file://$MODULE_DIR$/app/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/app/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Flutter for Android" level="project" />
+    <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
   </component>
 </module>

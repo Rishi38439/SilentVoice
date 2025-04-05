@@ -1,7 +1,6 @@
-// ignore_for_file: deprecated_member_use, camel_case_types
-
 import 'package:flutter/material.dart';
 import 'package:silent_voice/alphabet_learning.dart';
+import 'package:silent_voice/num_learning.dart';
 import 'dart:math';
 
 class SignLearningScreen extends StatelessWidget {
@@ -50,24 +49,21 @@ class SignLearningScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// **Top Row: Profile & Settings Icons**
+                SizedBox(height: screenHeight * 0.02),
+
+                /// **Back Button**
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(Icons.person,
-                          color: Colors.black, size: screenWidth * 0.09),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.settings,
-                            color: Colors.black, size: screenWidth * 0.08),
-                      ),
-                    ],
+                  padding: EdgeInsets.only(left: screenWidth * 0.03),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back,
+                        size: 30, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context); // Go back to the previous screen
+                    },
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.01), // Adjusted spacing
 
                 /// **Title**
                 Center(
@@ -100,6 +96,7 @@ class SignLearningScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(height: screenHeight * 0.06),
+
                           /// **Buttons moved to the top**
                           _buildMenuButton(
                             icon: Icons.menu_book,
@@ -119,7 +116,13 @@ class SignLearningScreen extends StatelessWidget {
                             icon: Icons.numbers,
                             title: "Numbers",
                             subtitle: "Learn sign language numbers",
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const NumberScreen()),
+                              );
+                            },
                           ),
 
                           /// **Spacer to push remaining content to bottom**

@@ -1,11 +1,12 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:silent_voice/homepage.dart';
-import 'package:silent_voice/l10n/app_localization.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Import Supabase
+import '/homepage.dart';
 import '/forgotpass.dart';
 import '/signup.dart';
+import 'dart:math';
 
 class Login extends StatefulWidget {
   final Function(Locale) setLocale;
@@ -13,6 +14,7 @@ class Login extends StatefulWidget {
   const Login({super.key, required this.setLocale});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginState createState() => _LoginState();
 }
 
@@ -44,18 +46,30 @@ class _LoginState extends State<Login> {
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
-    if (username == "admin" && password == "admin") {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLoggedIn', true);
+    final supabase = Supabase.instance.client;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Home_screen(setLocale: widget.setLocale),
-        ),
-      );
-    } else {
-      _showErrorDialog("Invalid username or password");
+    try {
+      final response = await supabase
+          .from('User_data') // Change 'users' to your actual table name
+          .select()
+          .eq('username', username)
+          .eq('password', password)
+          .maybeSingle();
+
+      if (response != null) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+        prefs.setString('username', username);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home_screen()),
+        );
+      } else {
+        _showErrorDialog("Invalid username or password.");
+      }
+    } catch (e) {
+      _showErrorDialog("Login error: $e");
     }
   }
 
@@ -77,6 +91,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -91,12 +108,28 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
+          Positioned(
+            top: -screenHeight * 0.1,
+            left: -screenWidth * 0.1,
+            child: Transform.rotate(
+              angle: pi / 6,
+              child: Container(
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.3),
+                ),
+              ),
+            ),
+          ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.07),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const SizedBox(height: 50),
                   const Text(
                     "Good to see you,",
                     style: TextStyle(
@@ -111,18 +144,10 @@ class _LoginState extends State<Login> {
                     style: TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-                  _buildTextField(
-                    Icons.person,
-                    AppLocalizations.of(context)?.translate('username') ?? 'Username',
-                    usernameController,
-                  ),
+                  _buildTextField(Icons.email, "Email", usernameController),
                   const SizedBox(height: 20),
-                  _buildTextField(
-                    Icons.lock,
-                    AppLocalizations.of(context)?.translate('password') ?? 'Password',
-                    passwordController,
-                    obscureText: true,
-                  ),
+                  _buildTextField(Icons.lock, "Password", passwordController,
+                      obscureText: true),
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,

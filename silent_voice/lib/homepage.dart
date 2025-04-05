@@ -1,30 +1,14 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:silent_voice/l10n/app_localization.dart';
 import '/sign_dict.dart';
 import '/sign_interpreter.dart';
 import '/sign_concepts.dart';
-import '/login.dart';
 import '/account_page.dart';
-import '/settings_page.dart';
+import '/app_settings.dart';
 
 class Home_screen extends StatelessWidget {
-  final Function(Locale) setLocale;
-  const Home_screen({super.key, required this.setLocale});
-
-  Future<void> logout(BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', false);
-
-    if (context.mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Login(setLocale: (locale) {})),
-      );
-    }
-  }
+  const Home_screen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,21 +59,13 @@ class Home_screen extends StatelessWidget {
                       Row(
                         children: [
                           IconButton(
-                            onPressed: () => logout(context),
-                            icon: Icon(
-                              Icons.logout,
-                              color: Colors.black,
-                              size: screenWidth * 0.08,
-                            ),
-                          ),
-                          IconButton(
                             onPressed: () {
                               Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SettingsPage(),
-                            ),
-                          );
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingsPage(),
+                                ),
+                              );
                             },
                             icon: Icon(
                               Icons.settings,
@@ -107,7 +83,7 @@ class Home_screen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                   child: Text(
-                    AppLocalizations.of(context)?.translate("welcome_user") ?? "Welcome, User!",
+                    "Welcome, User!",
                     style: TextStyle(
                       fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.bold,
@@ -116,7 +92,8 @@ class Home_screen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: screenHeight * 0.05), // Moves white container down
+                SizedBox(
+                    height: screenHeight * 0.05), // Moves white container down
 
                 /// White Full-Screen Container with Buttons
                 Expanded(
@@ -147,7 +124,8 @@ class Home_screen extends StatelessWidget {
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05), // Increased spacing
+                          SizedBox(
+                              height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
                             context: context,
                             icon: Icons.record_voice_over,
@@ -163,7 +141,8 @@ class Home_screen extends StatelessWidget {
                               );
                             },
                           ),
-                          SizedBox(height: screenHeight * 0.05), // Increased spacing
+                          SizedBox(
+                              height: screenHeight * 0.05), // Increased spacing
                           _buildMenuButton(
                             context: context,
                             icon: Icons.front_hand,
@@ -228,7 +207,7 @@ class Home_screen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppLocalizations.of(context)?.translate(titleKey) ?? titleKey,
+                    title,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -236,7 +215,7 @@ class Home_screen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    AppLocalizations.of(context)?.translate(subtitleKey) ?? subtitleKey,
+                    subtitle,
                     style: const TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
