@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
@@ -13,38 +11,42 @@ class VideoTextScreen extends StatefulWidget {
 class _VideoTextScreenState extends State<VideoTextScreen> {
   List<CameraDescription>? _cameras;
   CameraController? _controller;
-  int _selectedCameraIndex = 0;
-  String recognizedText = "Recognized Text";
   bool _isProcessing = false;
+  String recognizedText = "Recognized Text";
+  int _selectedCameraIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadModel();
     _initializeCamera();
   }
 
-  Future<void> _initializeCamera([int cameraIndex = 0]) async {
-    final cameras = await availableCameras();
-    _cameras = cameras;
-
-    if (_cameras == null || _cameras!.isEmpty) {
-      debugPrint("No cameras available");
-      return;
+  Future<void> _loadModel() async {
+    try {
+      await Tflite.loadModel(
+        model: "assets/sign_model.tflite",
+        labels: "assets/labels.txt",
+      );
+      debugPrint("Model loaded successfully");
+    } catch (e) {
+      debugPrint("Failed to load model: $e");
     }
+  }
 
+  Future<void> _initializeCamera([int cameraIndex = 0]) async {
+    _cameras = await availableCameras();
     _controller = CameraController(
       _cameras![cameraIndex],
-      ResolutionPreset.medium, // Medium quality for better performance
-      imageFormatGroup:
-          ImageFormatGroup.bgra8888, // Optimized for ML processing
+      ResolutionPreset.medium,
+      imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
     await _controller!.initialize();
-
-    // Start continuous frame processing
-    _controller!.startImageStream((CameraImage image) {
+    _controller!.startImageStream((image) {
       if (!_isProcessing) {
-        _processFrame(image);
+        _isProcessing = true;
+        _runModelOnFrame(image);
       }
     });
 
@@ -52,18 +54,35 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
     setState(() {});
   }
 
-  Future<void> _processFrame(CameraImage image) async {
-    _isProcessing = true;
+  Future<void> _runModelOnFrame(CameraImage image) async {
     try {
-      // TODO: Process frame using ML model
-      // This is where you'll add the ML model integration
-      // For now, we'll just simulate processing
-      await Future.delayed(const Duration(milliseconds: 100));
-      setState(() {
-        recognizedText = "Live recognition in progress...";
-      });
+      // Extract the bytes from the camera image
+      var bytesList = image.planes.map((plane) => plane.bytes).toList();
+
+      // Run the model on the frame
+      var predictions = await Tflite.runModelOnFrame(
+        bytesList: bytesList,
+        imageHeight: image.height,
+        imageWidth: image.width,
+        imageMean: 127.5, // This might need adjustment based on your model
+        imageStd: 127.5, // This might need adjustment based on your model
+        rotation: 90, // Adjust based on camera orientation
+        numResults: 2, // Return top 2 results
+        threshold: 0.1, // Detection threshold
+        asynch: true,
+      );
+
+      if (predictions != null && predictions.isNotEmpty) {
+        final prediction = predictions[0];
+        setState(() {
+          // Format: "Label: 95.3%"
+          recognizedText =
+              "${prediction['label']} ${(prediction['confidence'] * 100).toStringAsFixed(1)}%";
+        });
+        debugPrint("Prediction: $recognizedText");
+      }
     } catch (e) {
-      debugPrint("Error processing frame: $e");
+      debugPrint("Model run error: $e");
     } finally {
       _isProcessing = false;
     }
@@ -79,86 +98,73 @@ class _VideoTextScreenState extends State<VideoTextScreen> {
 
   @override
   void dispose() {
-    _controller?.stopImageStream();
     _controller?.dispose();
+    Tflite.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          Column(
-            children: [
-              // Gradient Header with Back and Camera Toggle Button
-              Container(
-                height: screenHeight * 0.1,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.04, vertical: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, size: 40),
-                        onPressed: () => Navigator.pop(context), //chage here
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.flip_camera_ios, size: 40),
-                        onPressed: _toggleCamera,
-                      ),
-                    ],
-                  ),
-                ),
+          Container(
+            height: screenHeight * 0.12,
+            padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04, vertical: 30),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF45B2E0), Color(0xFF97D8C4)],
               ),
-
-              // Camera Preview with Mirror Effect for Front Camera
-              Expanded(
-                child: _controller == null || !_controller!.value.isInitialized
-                    ? const Center(child: CircularProgressIndicator())
-                    : (_selectedCameraIndex == 1
-                        ? Transform(
-                            alignment: Alignment.center,
-                            transform: Matrix4.rotationY(3.1416),
-                            child: CameraPreview(_controller!),
-                          )
-                        : CameraPreview(_controller!)),
-              ),
-            ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back,
+                      size: 40, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.flip_camera_ios,
+                      size: 40, color: Colors.white),
+                  onPressed: _toggleCamera,
+                ),
+              ],
+            ),
           ),
-
-          // Bottom Container with Recognition Text
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: screenHeight * 0.2,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(screenWidth * 0.05),
-                  topRight: Radius.circular(screenWidth * 0.05),
-                ),
+          Expanded(
+            child: _controller == null || !_controller!.value.isInitialized
+                ? const Center(child: CircularProgressIndicator())
+                : (_selectedCameraIndex == 1
+                    ? Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.rotationY(3.1416),
+                        child: CameraPreview(_controller!),
+                      )
+                    : CameraPreview(_controller!)),
+          ),
+          Container(
+            height: screenHeight * 0.18,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(screenWidth * 0.05),
+                topRight: Radius.circular(screenWidth * 0.05),
               ),
-              child: Center(
-                child: Text(
-                  recognizedText,
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.04,
-                    fontWeight: FontWeight.w500,
-                  ),
+            ),
+            child: Center(
+              child: Text(
+                recognizedText,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.045,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

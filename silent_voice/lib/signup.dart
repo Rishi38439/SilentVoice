@@ -68,7 +68,7 @@ class _SignUpState extends State<SignUp> {
         return;
       }
 
-      final response = await supabase.from('User_data').insert({
+      await supabase.from('User_data').insert({
         'email': email,
         'mobile_no': mobileNo,
         'password': password,

@@ -25,7 +25,6 @@ class SettingsPage extends StatelessWidget {
           children: [
             _buildSectionTitle("General Settings"),
             _buildSettingItem(Icons.language, "Language Preference"),
-            _buildSettingItem(Icons.dark_mode, "Dark / Light Mode"),
             _buildSettingItem(
                 Icons.notifications, "Enable / Disable app notification"),
             _buildDeleteCacheItem(context), // Delete Cache Option
